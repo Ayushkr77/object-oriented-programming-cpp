@@ -13,11 +13,18 @@ public:  // need to keep this public so that we can access this from outside the
     void display();
     void input();
 
+
     // setters and getters(bcz since the data members are private, we need to make functions to update them)
-    void setName(string name);
-    void setAge(int age);
+    // void setName(string name);
+    // void setAge(int age);
+
+    // to understand this, *this and method chaining
+    Student& setName(string name);
+    Student& setAge(int age);
     string getName();
     int getAge();
+
+
 
     void registerStudent();   // NOTE: This function is only for learning static data members. In a later version, when we learn constructors, this function will be removed and studentCount will be incremented automatically inside the constructor whenever a Student object is created.
 
@@ -58,23 +65,20 @@ void Student::displayStudentCount() {
 
 
 
-void Student::setName(string name) {
-    if (!name.empty()) {
-        this->name = name;  // if we dont write this->name and just write name=name, then it means parameter = parameter and will print empty output
+Student& Student::setName(string name)
+{
+    if (!name.empty())
+    {
+        this->name = name;
     }
-    else {
-        cout << "Invalid Name!\n";
-    }
-
+    return *this;  // Returning *this enables method chaining by returning a reference to the current object. here if we are removing this return statement, its still working fine but it may be possible that in a nother compilers, it'll give error.
 }
 
-void Student::setAge(int age) {
+Student& Student::setAge(int age) {
     if (age >= 0) {
-        this->age = age; // if we dont write this->age and just write age=age, then it means parameter = parameter and will print garbage value
+        this->age = age; 
     }
-    else {
-        cout << "Invalid Age!\n";
-    }
+    return *this;
 }
 
 string Student::getName() {
@@ -109,9 +113,7 @@ int main() {
     // s1.age = 25;      // Error
     // s1.name = "Ayush"; // Error
 
-    // Updating using setters
-    s2.setName("Rohit");
-    s2.setAge(40);
+    s2.setName("Rohit").setAge(40);   // method chaining. // setName() returns *this (i.e., the same object), allowing setAge() to be called on it.
 
     cout << "\nAfter Updating Student 2\n\n";
 
