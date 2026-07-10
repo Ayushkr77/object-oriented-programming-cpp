@@ -1,4 +1,20 @@
 // note that in this file, many commits will be there, those are versions which represents the learning prgress how we learnt each thing one by one. try to see all the commits of this file. and see each and every block, every comment carefully on each version as comments as well changes
+
+/*
+Version History
+---------------
+v1  : Class, Objects & Member Variables
+v2  : Member Functions
+v3  : Scope Resolution Operator (::)
+v4  : Multiple Objects & Independent Object Memory
+v5  : Access Specifiers & Encapsulation
+v6  : Getters, Setters & Validation
+v7  : Static Data Members & Student Counter
+v8  : this Pointer & Name Conflict Resolution
+v9  : return *this & Method Chaining
+v10 : Final Student Management System (Integration of all learned concepts)
+*/
+
 #include<bits/stdc++.h>
 using namespace std;
 class Student {
