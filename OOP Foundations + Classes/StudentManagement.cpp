@@ -5,8 +5,11 @@ class Student {
 private:   // default is private as well
     string name;
     int age;
+
+    static int studentCount;  // // Shared by all Student objects
     
 public:  // need to keep this public so that we can access this from outside the class
+    // Member Functions
     void display();
     void input();
 
@@ -15,7 +18,15 @@ public:  // need to keep this public so that we can access this from outside the
     void setAge(int newAge);
     string getName();
     int getAge();
+
+    void registerStudent();   // NOTE: This function is only for learning static data members. In a later version, when we learn constructors, this function will be removed and studentCount will be incremented automatically inside the constructor whenever a Student object is created.
+
+    static void displayStudentCount(); // // Static Member Functions
 };
+
+
+// Static Data Member Initialization
+int Student::studentCount = 0;
 
 // we cannot define below functions inside int main. Function definitions cannot be inside another function. Remember: A function cannot be defined inside another function in C++. Only function calls are allowed inside main().
 void Student:: display() {   // compiler internally behaves like void Student::display(Student* this)
@@ -34,8 +45,17 @@ void Student::input() {
     // Use setters so validation is applied
     setName(tempName);
     setAge(tempAge);
-
 }
+
+
+void Student::registerStudent() {
+    studentCount++;
+}
+
+void Student::displayStudentCount() {
+    cout << "\nTotal Students Created : " << studentCount << endl;
+}
+
 
 
 void Student::setName(string newName) {
@@ -70,6 +90,11 @@ int main() {
 
     Student s1, s2, s3;
 
+    s1.registerStudent();
+    s2.registerStudent();
+    s3.registerStudent();
+
+
     s1.input();
     s2.input();
     s3.input();
@@ -93,6 +118,9 @@ int main() {
     s1.display();
     s2.display();
     s3.display();
+
+
+    Student::displayStudentCount();
 
 
     // this will not work as the variables/ data members are private 
