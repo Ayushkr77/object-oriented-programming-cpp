@@ -1,0 +1,1045 @@
+Excellent. This is a small but **very important** topic because you'll see the `::` operator throughout C++—not just in OOP, but also with **static members**, **namespaces**, and the **Standard Library (`std::`)**.
+
+A lot of beginners memorize its syntax without understanding what it actually means.
+
+---
+
+# Module 10: Scope Resolution Operator (`::`)
+
+## 🎯 Deliverable
+
+By the end of this module, you should know:
+
+* What is the Scope Resolution Operator (`::`)?
+* Why do we use it?
+* How it is used to define member functions.
+* How it is used with static members.
+* How it is used with global variables.
+* How it is used with namespaces.
+
+---
+
+# 1. What is `::`?
+
+## Definition
+
+> The **Scope Resolution Operator (`::`)** is used to specify the **scope** or **owner** of a variable, function, class member, or namespace.
+
+### In simple words
+
+It tells the compiler:
+
+> **"This thing belongs to that scope."**
+
+Think of it as saying:
+
+```text
+Owner :: Member
+```
+
+or
+
+```text
+Belongs To :: Thing
+```
+
+---
+
+## Real-Life Analogy
+
+Imagine a school.
+
+There are many students named **Rahul**.
+
+```text
+Class A → Rahul
+
+Class B → Rahul
+
+Class C → Rahul
+```
+
+If someone says,
+
+> "Call Rahul."
+
+Which Rahul?
+
+Confusing.
+
+Instead,
+
+they say:
+
+```text
+Class A :: Rahul
+```
+
+Now everyone knows **which Rahul**.
+
+The `::` operator works similarly in C++.
+
+It tells the compiler exactly **where to look**.
+
+---
+
+# 2. Why Do We Use `::`?
+
+Sometimes the compiler doesn't know which variable or function you mean.
+
+The Scope Resolution Operator removes this ambiguity.
+
+It is commonly used for:
+
+* Member function definitions
+* Static data members
+* Global variables
+* Namespaces
+
+---
+
+# 3. Member Function Definition
+
+Suppose we have:
+
+```cpp
+class Student
+{
+public:
+    void display();
+};
+```
+
+Here,
+
+`display()` is **declared**.
+
+Now define it outside the class.
+
+```cpp
+void Student::display()
+{
+    cout << "Hello";
+}
+```
+
+---
+
+## What does `Student::display()` mean?
+
+It means:
+
+> **The function `display()` belongs to the `Student` class.**
+
+Without `Student::`
+
+```cpp
+void display()
+{
+}
+```
+
+the compiler thinks it is a **normal global function**, not a member function.
+
+---
+
+### Visualization
+
+```text
+Student Class
+
+↓
+
+display();
+
+↓
+
+Outside Class
+
+↓
+
+Student::display()
+```
+
+---
+
+# 4. Static Members
+
+Suppose we have:
+
+```cpp
+class Student
+{
+public:
+    static int totalStudents;
+};
+```
+
+A static data member belongs to the **class**, not to any object.
+
+It must be defined outside the class.
+
+```cpp
+int Student::totalStudents = 0;
+```
+
+---
+
+### What does this mean?
+
+```cpp
+Student::totalStudents
+```
+
+means
+
+> "`totalStudents` belongs to the `Student` class."
+
+---
+
+Accessing it:
+
+```cpp
+Student::totalStudents = 10;
+```
+
+No object is needed.
+
+---
+
+# 5. Global Scope
+
+Suppose you have:
+
+```cpp
+int x = 100;
+```
+
+Global variable.
+
+Now inside `main()`:
+
+```cpp
+int main()
+{
+    int x = 50;
+}
+```
+
+Now there are **two variables** named `x`.
+
+```text
+Global x = 100
+
+Local x = 50
+```
+
+If you write:
+
+```cpp
+cout << x;
+```
+
+Output:
+
+```text
+50
+```
+
+because the local variable hides the global one.
+
+To access the global variable:
+
+```cpp
+cout << ::x;
+```
+
+Output:
+
+```text
+100
+```
+
+---
+
+### What does `::x` mean?
+
+It means:
+
+> "Use the variable `x` from the **global scope**."
+
+---
+
+# 6. Namespace Resolution (Brief Introduction)
+
+You've already seen this:
+
+```cpp
+std::cout
+```
+
+What does it mean?
+
+`cout` belongs to the `std` namespace.
+
+Similarly,
+
+```cpp
+std::cin
+
+std::string
+
+std::vector
+```
+
+All belong to the Standard Library namespace.
+
+---
+
+If we write:
+
+```cpp
+using namespace std;
+```
+
+then we don't need to write:
+
+```cpp
+std::
+```
+
+every time.
+
+So,
+
+```cpp
+std::cout
+```
+
+becomes
+
+```cpp
+cout
+```
+
+---
+
+# Summary of Uses
+
+| Use             | Example                  | Meaning                              |
+| --------------- | ------------------------- | ------------------------------------- |
+| Member Function | `Student::display()`     | `display()` belongs to `Student`     |
+| Static Member   | `Student::totalStudents` | `totalStudents` belongs to `Student` |
+| Global Variable | `::x`                    | Global `x`                           |
+| Namespace       | `std::cout`              | `cout` belongs to `std` namespace    |
+
+---
+
+# Easy Trick to Remember
+
+Whenever you see:
+
+```cpp
+Something::Anything
+```
+
+Read it as:
+
+> **"`Anything` belongs to `Something`."**
+
+Examples:
+
+```cpp
+Student::display()
+```
+
+↓
+
+"display belongs to Student."
+
+---
+
+```cpp
+Student::count
+```
+
+↓
+
+"count belongs to Student."
+
+---
+
+```cpp
+std::cout
+```
+
+↓
+
+"cout belongs to std."
+
+---
+
+# Common Mistakes
+
+### ❌ Forgetting `Student::`
+
+Wrong:
+
+```cpp
+void display()
+{
+}
+```
+
+Correct:
+
+```cpp
+void Student::display()
+{
+}
+```
+
+---
+
+### ❌ Accessing static members using objects
+
+Possible:
+
+```cpp
+Student s1;
+
+s1.totalStudents;
+```
+
+Preferred:
+
+```cpp
+Student::totalStudents;
+```
+
+because the static member belongs to the class, not to an individual object.
+
+---
+
+### ❌ Confusing `.` with `::`
+
+Remember:
+
+* `.` → Access members through an **object**.
+* `::` → Access members through a **class, namespace, or global scope**.
+
+---
+
+# `.` vs `::`
+
+| `.` Operator      | `::` Operator                                   |
+| ------------------ | ------------------------------------------------- |
+| Used with objects | Used with classes, namespaces, and global scope |
+| `s1.display()`    | `Student::display()`                            |
+| `s1.name`         | `Student::count`                                |
+
+---
+
+# Interview Questions
+
+### 1. What is the Scope Resolution Operator?
+
+> The Scope Resolution Operator (`::`) is used to specify the scope or owner of a class member, static member, global variable, or namespace member.
+
+---
+
+### 2. Why do we use `::`?
+
+> We use it to remove ambiguity and tell the compiler exactly which scope a member belongs to.
+
+---
+
+### 3. Where is `::` commonly used?
+
+* Defining member functions outside a class.
+* Accessing static data members.
+* Accessing global variables.
+* Accessing namespace members (e.g., `std::cout`).
+
+---
+
+## 💡 One Important Clarification
+
+Beginners often ask:
+
+> **"Does `Student::display()` call the function?"**
+
+**No.**
+
+There are **two different uses** of `Student::display()`:
+
+### 1. **While defining the function (most common in this module)**
+
+```cpp
+class Student
+{
+public:
+    void display();
+};
+
+void Student::display()
+{
+    cout << "Hello";
+}
+```
+
+Here, `Student::display()` is **defining** the member function outside the class.
+
+---
+
+### 2. **While calling a static member function (you'll learn this later)**
+
+```cpp
+Student::showCount();
+```
+
+Here, `Student::showCount()` is **calling** a static member function.
+
+So don't assume that every `ClassName::something` is a function call. The meaning depends on the context.
+
+---
+
+# ⭐ One Last Interview Tip
+
+A very easy way to remember the difference between the three most common operators in C++ OOP is:
+
+| Operator | Read it as            | Used For                                                    |
+| -------- | ---------------------- | ------------------------------------------------------------ |
+| `.`      | **Object has**        | Access members through an object                            |
+| `->`     | **Pointer points to** | Access members through an object pointer (later topic)      |
+| `::`     | **Belongs to**        | Specify the owner/scope (class, namespace, or global scope) |
+
+If you remember:
+
+* `.` → **has**
+* `->` → **points to**
+* `::` → **belongs to**
+
+you'll find it much easier to understand later OOP topics.Excellent. This is a small but **very important** topic because you'll see the `::` operator throughout C++—not just in OOP, but also with **static members**, **namespaces**, and the **Standard Library (`std::`)**.
+
+A lot of beginners memorize its syntax without understanding what it actually means.
+
+---
+
+# Module 10: Scope Resolution Operator (`::`)
+
+## 🎯 Deliverable
+
+By the end of this module, you should know:
+
+* What is the Scope Resolution Operator (`::`)?
+* Why do we use it?
+* How it is used to define member functions.
+* How it is used with static members.
+* How it is used with global variables.
+* How it is used with namespaces.
+
+---
+
+# 1. What is `::`?
+
+## Definition
+
+> The **Scope Resolution Operator (`::`)** is used to specify the **scope** or **owner** of a variable, function, class member, or namespace.
+
+### In simple words
+
+It tells the compiler:
+
+> **"This thing belongs to that scope."**
+
+Think of it as saying:
+
+```text
+Owner :: Member
+```
+
+or
+
+```text
+Belongs To :: Thing
+```
+
+---
+
+## Real-Life Analogy
+
+Imagine a school.
+
+There are many students named **Rahul**.
+
+```text
+Class A → Rahul
+
+Class B → Rahul
+
+Class C → Rahul
+```
+
+If someone says,
+
+> "Call Rahul."
+
+Which Rahul?
+
+Confusing.
+
+Instead,
+
+they say:
+
+```text
+Class A :: Rahul
+```
+
+Now everyone knows **which Rahul**.
+
+The `::` operator works similarly in C++.
+
+It tells the compiler exactly **where to look**.
+
+---
+
+# 2. Why Do We Use `::`?
+
+Sometimes the compiler doesn't know which variable or function you mean.
+
+The Scope Resolution Operator removes this ambiguity.
+
+It is commonly used for:
+
+* Member function definitions
+* Static data members
+* Global variables
+* Namespaces
+
+---
+
+# 3. Member Function Definition
+
+Suppose we have:
+
+```cpp
+class Student
+{
+public:
+    void display();
+};
+```
+
+Here,
+
+`display()` is **declared**.
+
+Now define it outside the class.
+
+```cpp
+void Student::display()
+{
+    cout << "Hello";
+}
+```
+
+---
+
+## What does `Student::display()` mean?
+
+It means:
+
+> **The function `display()` belongs to the `Student` class.**
+
+Without `Student::`
+
+```cpp
+void display()
+{
+}
+```
+
+the compiler thinks it is a **normal global function**, not a member function.
+
+---
+
+### Visualization
+
+```text
+Student Class
+
+↓
+
+display();
+
+↓
+
+Outside Class
+
+↓
+
+Student::display()
+```
+
+---
+
+# 4. Static Members
+
+Suppose we have:
+
+```cpp
+class Student
+{
+public:
+    static int totalStudents;
+};
+```
+
+A static data member belongs to the **class**, not to any object.
+
+It must be defined outside the class.
+
+```cpp
+int Student::totalStudents = 0;
+```
+
+---
+
+### What does this mean?
+
+```cpp
+Student::totalStudents
+```
+
+means
+
+> "`totalStudents` belongs to the `Student` class."
+
+---
+
+Accessing it:
+
+```cpp
+Student::totalStudents = 10;
+```
+
+No object is needed.
+
+---
+
+# 5. Global Scope
+
+Suppose you have:
+
+```cpp
+int x = 100;
+```
+
+Global variable.
+
+Now inside `main()`:
+
+```cpp
+int main()
+{
+    int x = 50;
+}
+```
+
+Now there are **two variables** named `x`.
+
+```text
+Global x = 100
+
+Local x = 50
+```
+
+If you write:
+
+```cpp
+cout << x;
+```
+
+Output:
+
+```text
+50
+```
+
+because the local variable hides the global one.
+
+To access the global variable:
+
+```cpp
+cout << ::x;
+```
+
+Output:
+
+```text
+100
+```
+
+---
+
+### What does `::x` mean?
+
+It means:
+
+> "Use the variable `x` from the **global scope**."
+
+---
+
+# 6. Namespace Resolution (Brief Introduction)
+
+You've already seen this:
+
+```cpp
+std::cout
+```
+
+What does it mean?
+
+`cout` belongs to the `std` namespace.
+
+Similarly,
+
+```cpp
+std::cin
+
+std::string
+
+std::vector
+```
+
+All belong to the Standard Library namespace.
+
+---
+
+If we write:
+
+```cpp
+using namespace std;
+```
+
+then we don't need to write:
+
+```cpp
+std::
+```
+
+every time.
+
+So,
+
+```cpp
+std::cout
+```
+
+becomes
+
+```cpp
+cout
+```
+
+---
+
+# Summary of Uses
+
+| Use             | Example                  | Meaning                              |
+| --------------- | ------------------------- | ------------------------------------- |
+| Member Function | `Student::display()`     | `display()` belongs to `Student`     |
+| Static Member   | `Student::totalStudents` | `totalStudents` belongs to `Student` |
+| Global Variable | `::x`                    | Global `x`                           |
+| Namespace       | `std::cout`              | `cout` belongs to `std` namespace    |
+
+---
+
+# Easy Trick to Remember
+
+Whenever you see:
+
+```cpp
+Something::Anything
+```
+
+Read it as:
+
+> **"`Anything` belongs to `Something`."**
+
+Examples:
+
+```cpp
+Student::display()
+```
+
+↓
+
+"display belongs to Student."
+
+---
+
+```cpp
+Student::count
+```
+
+↓
+
+"count belongs to Student."
+
+---
+
+```cpp
+std::cout
+```
+
+↓
+
+"cout belongs to std."
+
+---
+
+# Common Mistakes
+
+### ❌ Forgetting `Student::`
+
+Wrong:
+
+```cpp
+void display()
+{
+}
+```
+
+Correct:
+
+```cpp
+void Student::display()
+{
+}
+```
+
+---
+
+### ❌ Accessing static members using objects
+
+Possible:
+
+```cpp
+Student s1;
+
+s1.totalStudents;
+```
+
+Preferred:
+
+```cpp
+Student::totalStudents;
+```
+
+because the static member belongs to the class, not to an individual object.
+
+---
+
+### ❌ Confusing `.` with `::`
+
+Remember:
+
+* `.` → Access members through an **object**.
+* `::` → Access members through a **class, namespace, or global scope**.
+
+---
+
+# `.` vs `::`
+
+| `.` Operator      | `::` Operator                                   |
+| ------------------ | ------------------------------------------------- |
+| Used with objects | Used with classes, namespaces, and global scope |
+| `s1.display()`    | `Student::display()`                            |
+| `s1.name`         | `Student::count`                                |
+
+---
+
+# Interview Questions
+
+### 1. What is the Scope Resolution Operator?
+
+> The Scope Resolution Operator (`::`) is used to specify the scope or owner of a class member, static member, global variable, or namespace member.
+
+---
+
+### 2. Why do we use `::`?
+
+> We use it to remove ambiguity and tell the compiler exactly which scope a member belongs to.
+
+---
+
+### 3. Where is `::` commonly used?
+
+* Defining member functions outside a class.
+* Accessing static data members.
+* Accessing global variables.
+* Accessing namespace members (e.g., `std::cout`).
+
+---
+
+## 💡 One Important Clarification
+
+Beginners often ask:
+
+> **"Does `Student::display()` call the function?"**
+
+**No.**
+
+There are **two different uses** of `Student::display()`:
+
+### 1. **While defining the function (most common in this module)**
+
+```cpp
+class Student
+{
+public:
+    void display();
+};
+
+void Student::display()
+{
+    cout << "Hello";
+}
+```
+
+Here, `Student::display()` is **defining** the member function outside the class.
+
+---
+
+### 2. **While calling a static member function (you'll learn this later)**
+
+```cpp
+Student::showCount();
+```
+
+Here, `Student::showCount()` is **calling** a static member function.
+
+So don't assume that every `ClassName::something` is a function call. The meaning depends on the context.
+
+---
+
+# ⭐ One Last Interview Tip
+
+A very easy way to remember the difference between the three most common operators in C++ OOP is:
+
+| Operator | Read it as            | Used For                                                    |
+| -------- | ---------------------- | ------------------------------------------------------------ |
+| `.`      | **Object has**        | Access members through an object                            |
+| `->`     | **Pointer points to** | Access members through an object pointer (later topic)      |
+| `::`     | **Belongs to**        | Specify the owner/scope (class, namespace, or global scope) |
+
+If you remember:
+
+* `.` → **has**
+* `->` → **points to**
+* `::` → **belongs to**
+
+you'll find it much easier to understand later OOP topics.
