@@ -1,4 +1,4 @@
-// note that in this file, many commits will be there, those are versions which represents the learning prgress how we learnt each thing one by one. try to see all the commits of this file
+// note that in this file, many commits will be there, those are versions which represents the learning prgress how we learnt each thing one by one. try to see all the commits of this file. and see each and every block, every comment carefully on each version as comments as well changes
 #include<bits/stdc++.h>
 using namespace std;
 class Student {
@@ -14,8 +14,8 @@ public:  // need to keep this public so that we can access this from outside the
     void input();
 
     // setters and getters(bcz since the data members are private, we need to make functions to update them)
-    void setName(string newName);
-    void setAge(int newAge);
+    void setName(string name);
+    void setAge(int age);
     string getName();
     int getAge();
 
@@ -31,8 +31,8 @@ int Student::studentCount = 0;
 // we cannot define below functions inside int main. Function definitions cannot be inside another function. Remember: A function cannot be defined inside another function in C++. Only function calls are allowed inside main().
 void Student:: display() {   // compiler internally behaves like void Student::display(Student* this)
     cout << "----------------------\n";
-    cout << "Name : " << getName() << endl;  // name will also work instead of getName() but for now its kept intentionally as we are learning setters and getters
-    cout << "Age  : " << getAge() << endl;
+    cout << "Name : " << name << endl;  // The compiler automatically treats it as: cout << this->name;
+    cout << "Age  : " << age << endl;
     cout << "----------------------\n";
 }
 void Student::input() {
@@ -58,9 +58,9 @@ void Student::displayStudentCount() {
 
 
 
-void Student::setName(string newName) {
-    if (!newName.empty()) {
-        name = newName;
+void Student::setName(string name) {
+    if (!name.empty()) {
+        this->name = name;  // if we dont write this->name and just write name=name, then it means parameter = parameter and will print empty output
     }
     else {
         cout << "Invalid Name!\n";
@@ -68,9 +68,9 @@ void Student::setName(string newName) {
 
 }
 
-void Student::setAge(int newAge) {
-    if (newAge >= 0) {
-        age = newAge;
+void Student::setAge(int age) {
+    if (age >= 0) {
+        this->age = age; // if we dont write this->age and just write age=age, then it means parameter = parameter and will print garbage value
     }
     else {
         cout << "Invalid Age!\n";
