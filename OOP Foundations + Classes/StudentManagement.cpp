@@ -22,9 +22,29 @@ void Student::input() {
 
 int main() {
 
-    Student s1,s2,s3;
+    Student s1, s2, s3;
 
     s1.input();
-    
+    s2.input();
+    s3.input();
+
+    cout << "\nBefore Modification\n";
+
     s1.display();
+    s2.display();
+    s3.display();
+
+    s2.age = 40;
+    s2.name = "Rohit";
+
+    cout << "\nAfter Modification\n";
+
+    s1.display();
+    s2.display();
+    s3.display();
+
+    // to show that each object occupies separate memory
+    cout << &s1 << endl;
+    cout << &s2 << endl;
+    cout << &s3 << endl;
 }
