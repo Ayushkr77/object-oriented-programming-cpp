@@ -25,15 +25,22 @@ public:  // need to keep this public so that we can access this from outside the
     // Member Function Definition
     void display();
 
-    
+
     static void displayStudentCount(); // Static Member Functions
 
 
     Student() {  // User-defined Default Constructor
-        name = "Unknown";
+        name = "Unknown";  // or this->name is also fine
         age = 0;
         studentCount++;
         cout << "Default Constructor Called\n";
+    }
+
+    Student(string name, int age) {  // User-defined Parameterized Constructor
+        this->name = name;
+        this->age = age;
+        studentCount++;
+        cout << "Parameterized Constructor Called for " << name << endl;
     }
 
 };
@@ -62,8 +69,8 @@ void Student:: display() {   // compiler internally behaves like void Student::d
 
 int main() {
     Student s1;
-    Student s2;
-    Student s3;
+    Student s2("Ayush", 23);
+    Student s3("Rahul", 21);
 
     cout << "\nStudent Details\n\n";
 
