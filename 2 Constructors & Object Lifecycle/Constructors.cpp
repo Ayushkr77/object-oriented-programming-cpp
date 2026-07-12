@@ -43,6 +43,15 @@ public:  // need to keep this public so that we can access this from outside the
         cout << "Parameterized Constructor Called for " << name << endl;
     }
 
+
+    // Constructor Overloading: A class can have multiple constructors as long as their function signatures (number/type/order of parameters) are different.
+    Student(string name) {  // User-defined Parameterized Constructor (Name Only). Constructor Overloading
+        this->name=name;
+        this->age=0;
+        studentCount++;
+        cout << "Parameterized Constructor (Name Only) Called for " << name << endl;
+    }
+
 };
 
 
@@ -70,7 +79,7 @@ void Student:: display() {   // compiler internally behaves like void Student::d
 int main() {
     Student s1;
     Student s2("Ayush", 23);
-    Student s3("Rahul", 21);
+    Student s3("Rahul");
 
     cout << "\nStudent Details\n\n";
 
