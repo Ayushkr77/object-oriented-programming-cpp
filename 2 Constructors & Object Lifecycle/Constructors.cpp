@@ -20,7 +20,11 @@ private:   // default is private as well
     int age;
 
     static int studentCount;  // // Shared by all Student objects
+
+    int &roll;      // Reference Data Member. Experiment 2: Reference Data Member. A reference data member MUST be initialized using the initialization list. A reference cannot be changed (reseated) after it is created.
     
+
+
 public:  // need to keep this public so that we can access this from outside the class
     // Member Function Definition
     void display();
@@ -28,7 +32,7 @@ public:  // need to keep this public so that we can access this from outside the
 
     static void displayStudentCount(); // Static Member Functions
 
-    const int id; // just for experiment(for initialization list). A const data member must be initialized using the initialization list. It CANNOT be assigned inside the constructor body.
+    
 
 
 
@@ -57,24 +61,29 @@ public:  // need to keep this public so that we can access this from outside the
 
 
 
-    Student(): name("Unknown"), age(0), id(0) {  // Initialization List. if id not provided, error
-        studentCount++;
-        cout << "Default Constructor Called\n";
-    }
+    // Student(): name("Unknown"), age(0){  // Initialization List. 
+    //     studentCount++;
+    //     cout << "Default Constructor Called\n";
+    // }
 
     // Student(string name, int age) {
     //     id = 101;          // ❌ Error
     // }
 
-    Student(string name, int age): name(name), age(age), id(101) {  // Initialization List
-        studentCount++;
-        cout << "Parameterized Constructor using initialization list called for " << name << endl;
-    }
+    // Student(string name, int age): name(name), age(age) {  // Initialization List
+    //     studentCount++;
+    //     cout << "Parameterized Constructor using initialization list called for " << name << endl;
+    // }
 
 
-    Student(string name): name(name), age(0), id(102) {  
-        studentCount++;
-        cout << "Parameterized Constructor (Name Only) using initialization list called for " << name << endl;
+    // Student(string name): name(name), age(0) {  
+    //     studentCount++;
+    //     cout << "Parameterized Constructor (Name Only) using initialization list called for " << name << endl;
+    // }
+
+
+    Student(string name, int age, int &roll): name(name), age(age), roll(roll) { // Initialization List. if roll not provided, error. it'll show error if any const or ref variable is not mentioned in the initialization list
+        cout << "Parameterized Constructor Called\n";
     }
 
 };
@@ -90,10 +99,19 @@ int Student::studentCount = 0;
 
 // we cannot define below functions inside int main. Function definitions cannot be inside another function. Remember: A function cannot be defined inside another function in C++. Only function calls are allowed inside main()// Member functions cannot be defined inside another function. They must be defined either inside the class or outside using ::..
 
-void Student:: display() {   // compiler internally behaves like void Student::display(Student* this)
+// void Student:: display() {   // compiler internally behaves like void Student::display(Student* this)
+//     cout << "----------------------\n";
+//     cout << "Name : " << name << endl;  // The compiler automatically treats it as: cout << this->name;
+//     cout << "Age  : " << age << endl;
+//     cout << "----------------------\n";
+// }
+
+
+void Student:: display() { 
     cout << "----------------------\n";
-    cout << "Name : " << name << endl;  // The compiler automatically treats it as: cout << this->name;
+    cout << "Name : " << name << endl;
     cout << "Age  : " << age << endl;
+    cout << "Roll : " << roll << endl;
     cout << "----------------------\n";
 }
 
@@ -102,15 +120,35 @@ void Student:: display() {   // compiler internally behaves like void Student::d
 
 
 int main() {
-    Student s1;
-    Student s2("Ayush", 23);
-    Student s3("Rahul");
+    // Student s1;
+    // Student s2("Ayush", 23);
+    // Student s3("Rahul");
 
-    cout << "\nStudent Details\n\n";
+    // cout << "\nStudent Details\n\n";
 
+    // s1.display();
+    // s2.display();
+    // s3.display();
+
+    // Student::displayStudentCount();
+
+
+
+    // for experiment 2
+    int rollNumber = 101;
+    Student s1("Ayush", 23, rollNumber);
     s1.display();
-    s2.display();
-    s3.display();
+    cout << "\nChanging rollNumber...\n\n";
+    rollNumber = 200;
+    s1.display();
 
-    Student::displayStudentCount();
+    // to understand ref variable
+    // int x = 10;
+    // int &ref = x;   // ref is another name for x
+    // cout << x << endl;    // 10
+    // cout << ref << endl;  // 10
+    // ref = 20;
+    // cout << x << endl;    // 20
+    // cout << ref << endl;  // 20
+    // ref and x refer to the same memory location.
 }
