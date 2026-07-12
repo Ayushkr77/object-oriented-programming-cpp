@@ -86,6 +86,13 @@ public:  // need to keep this public so that we can access this from outside the
         cout << "Parameterized Constructor Called\n";
     }
 
+    // Student(string name, int age, int &roll) {
+    //     this->name = name;
+    //     this->age = age;
+
+    //     this->roll = roll;      // ❌ Compile Error
+    // }
+
 };
 
 
