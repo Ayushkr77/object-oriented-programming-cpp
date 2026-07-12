@@ -28,28 +28,53 @@ public:  // need to keep this public so that we can access this from outside the
 
     static void displayStudentCount(); // Static Member Functions
 
+    const int id; // just for experiment(for initialization list). A const data member must be initialized using the initialization list. It CANNOT be assigned inside the constructor body.
 
-    Student() {  // User-defined Default Constructor
-        name = "Unknown";  // or this->name is also fine
-        age = 0;
+
+
+    // Student() {  // User-defined Default Constructor
+    //     name = "Unknown";  // or this->name is also fine
+    //     age = 0;
+    //     studentCount++;
+    //     cout << "Default Constructor Called\n";
+    // }
+
+    // Student(string name, int age) {  // User-defined Parameterized Constructor
+    //     this->name = name;
+    //     this->age = age;
+    //     studentCount++;
+    //     cout << "Parameterized Constructor Called for " << name << endl;
+    // }
+
+
+    // // Constructor Overloading: A class can have multiple constructors as long as their function signatures (number/type/order of parameters) are different.
+    // Student(string name) {  // User-defined Parameterized Constructor (Name Only). Constructor Overloading
+    //     this->name=name;
+    //     this->age=0;
+    //     studentCount++;
+    //     cout << "Parameterized Constructor (Name Only) Called for " << name << endl;
+    // }
+
+
+
+    Student(): name("Unknown"), age(0), id(0) {  // Initialization List. if id not provided, error
         studentCount++;
         cout << "Default Constructor Called\n";
     }
 
-    Student(string name, int age) {  // User-defined Parameterized Constructor
-        this->name = name;
-        this->age = age;
+    // Student(string name, int age) {
+    //     id = 101;          // ❌ Error
+    // }
+
+    Student(string name, int age): name(name), age(age), id(101) {  // Initialization List
         studentCount++;
-        cout << "Parameterized Constructor Called for " << name << endl;
+        cout << "Parameterized Constructor using initialization list called for " << name << endl;
     }
 
 
-    // Constructor Overloading: A class can have multiple constructors as long as their function signatures (number/type/order of parameters) are different.
-    Student(string name) {  // User-defined Parameterized Constructor (Name Only). Constructor Overloading
-        this->name=name;
-        this->age=0;
+    Student(string name): name(name), age(0), id(102) {  
         studentCount++;
-        cout << "Parameterized Constructor (Name Only) Called for " << name << endl;
+        cout << "Parameterized Constructor (Name Only) using initialization list called for " << name << endl;
     }
 
 };
