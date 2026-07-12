@@ -32,7 +32,7 @@ public:  // need to keep this public so that we can access this from outside the
     
 
     // Constructor Initialization List: Members are initialized before the constructor body executes. This is preferred over assigning values inside the constructor body because it directly initializes members instead of initializing them first and then assigning.
-    // Mandatory for const data members, reference data members, and member objects that do not have a default constructor. We already dud these in the 3 experiments.
+    // Mandatory for const data members, reference data members, and member objects that do not have a default constructor. We already dud these in the 3 experiments. u can see in commit history
 
     Student(): name("Unknown"), age(0){  // Initialization List. 
         studentCount++;
@@ -53,6 +53,22 @@ public:  // need to keep this public so that we can access this from outside the
 
     ~Student() {
         cout << "Destructor Called for " << name << endl;
+    }
+
+
+    // User-defined Copy Constructor: Creates a new object by copying the data from an existing object.
+    // Student(const Student &other) {
+    //     name = other.name;
+    //     age = other.age;
+    //     studentCount++;
+    //     cout << "Copy Constructor Called\n";
+    // }
+
+
+    // User defined Copy Constructor with initialization list: Creates a new object by copying the data from an existing object.
+    Student(const Student &other): name(other.name), age(other.age) {
+        studentCount++;
+        cout << "Copy Constructor Called for " << name << endl;
     }
 
 };
@@ -82,21 +98,67 @@ void Student:: display() {   // compiler internally behaves like void Student::d
 
 
 int main() {
-    cout << "Creating Stack Object\n";
-
     Student s1("Ayush", 23);
 
-    cout << "\nCreating Heap Object\n";
+    Student s2 = s1;
+    Student s3(s1);  // both are same. both call the copy constructor because they are creating new objects. Both create a new object by copying an existing object, so both invoke the copy constructor.
 
-    Student* s2 = new Student("Rahul", 21);
+    Student s4;  // Calls the default constructor. which we'll study later in the Rule of Three.
+    s4 = s1;  // // Does NOT call the copy constructor. It calls the copy assignment operator because s4 already exists. we'll study later in the Rule of Three.
 
-    cout << "\nDeleting Heap Object\n";
+    cout << "\nStudent Details\n\n";
 
-    delete s2;
+    s1.display();
+    s2.display();
+    s3.display();
+    s4.display();
 
-    cout << "\nEnd of main()\n";
+
+
+    // Explanation
+    // Student s1("Ayush", 23);  // Calls the parameterized constructor.
+    // Student s2 = s1;  // Calls the copy constructor because s2 is being created from s1.
+    // Student s3(s1);  // Also calls the copy constructor because s3 is being created from s1.
+
+    // Student s4;  // Calls the default constructor to create an empty/default Student object.
+    // s4 = s1;  // s4 already exists. This does not create a new object. It copies the contents of s1 into the existing object s4. This calls the copy assignment operator.
+
+
+
+    // ============================================================================
+    // Experiment 1: Compiler-Generated Copy Constructor
+    //
+    // Comment out the user-defined copy constructor and run:
+    //
+    // Student s2 = s1;
+    //
+    // The program still works because the compiler automatically generates a
+    // default copy constructor that performs member-wise (shallow) copying.
+    //
+    // After understanding this, restore the user-defined copy constructor.
+    // ============================================================================
+
+
+
+    // ============================================================================
+    // Experiment 2: Why is the Copy Constructor Passed by Reference?
+    //
+    // Temporarily change:
+    //
+    // Student(const Student &other)
+    //
+    // to
+    //
+    // Student(Student other)
+    //
+    // This results in infinite recursive calls (or a compile-time error,
+    // depending on the compiler).
+    //
+    // Reason:
+    // Passing 'other' by value requires making a copy of the argument.
+    // Making that copy again requires calling the copy constructor.
+    // This process repeats indefinitely.
+    //
+    // Therefore, a copy constructor must take its parameter by reference.
+    // ============================================================================
 }
-
-
-
-
