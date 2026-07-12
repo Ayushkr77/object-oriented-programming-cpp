@@ -51,6 +51,10 @@ public:  // need to keep this public so that we can access this from outside the
     }
 
 
+    ~Student() {
+        cout << "Destructor Called for " << name << endl;
+    }
+
 };
 
 
@@ -78,17 +82,32 @@ void Student:: display() {   // compiler internally behaves like void Student::d
 
 
 int main() {
-    Student s1;
-    Student s2("Ayush", 23);
-    Student s3("Rahul");
+    Student s1("Ayush", 23);
+    Student s2("Rahul", 21);
+    Student s3("Rohit", 20);
 
-    cout << "\nStudent Details\n\n";
+    cout << "Inside main()\n";
 
-    s1.display();
-    s2.display();
-    s3.display();
+    // Object Created
+    //   │
+    //   ▼
+    // Constructor Executes
+    //     │
+    //     ▼
+    // Object Used
+    //     │
+    //     ▼
+    // Destructor Executes
+    //     │
+    //     ▼
+    // Memory Released
 
-    Student::displayStudentCount();
+
+    // s1.display();
+    // s2.display();
+    // s3.display();
+
+    // Student::displayStudentCount();
 }
 
 
