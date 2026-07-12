@@ -82,32 +82,19 @@ void Student:: display() {   // compiler internally behaves like void Student::d
 
 
 int main() {
+    cout << "Creating Stack Object\n";
+
     Student s1("Ayush", 23);
-    Student s2("Rahul", 21);
-    Student s3("Rohit", 20);
 
-    cout << "Inside main()\n";
+    cout << "\nCreating Heap Object\n";
 
-    // Object Created
-    //   │
-    //   ▼
-    // Constructor Executes
-    //     │
-    //     ▼
-    // Object Used
-    //     │
-    //     ▼
-    // Destructor Executes
-    //     │
-    //     ▼
-    // Memory Released
+    Student* s2 = new Student("Rahul", 21);
 
+    cout << "\nDeleting Heap Object\n";
 
-    // s1.display();
-    // s2.display();
-    // s3.display();
+    delete s2;
 
-    // Student::displayStudentCount();
+    cout << "\nEnd of main()\n";
 }
 
 
