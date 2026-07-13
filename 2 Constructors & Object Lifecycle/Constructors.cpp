@@ -14,7 +14,7 @@
 
 #include<bits/stdc++.h>
 using namespace std;
-class String
+class MyString
 {
 private:
 
@@ -22,7 +22,7 @@ private:
 
 public:
 
-    String(const char* text) {
+    MyString(const char* text) {
         data = new char[strlen(text) + 1];   // Allocate memory on the heap to store a copy of the string
 
         strcpy(data, text);  // this is not same as data=text;   // Copies the string contents into the newly allocated memory. This is different from: data = text; (which copies only the pointer).
@@ -32,7 +32,17 @@ public:
         cout << "Constructor Called for \"" << data << "\"\n";
     }
 
-    ~String()
+
+    MyString(const MyString &other) {
+        data = new char[strlen(other.data) + 1];
+
+        strcpy(data, other.data);
+
+        cout << "Deep Copy Constructor Called\n";
+    }
+
+
+    ~MyString()
     {
         cout << "Destructor Called for \"" << data << "\"\n";
 
@@ -49,10 +59,60 @@ public:
 
 
 int main() {
-    String s1("Hello");
+    MyString s1("Hello");  // see what this means
 
-    String s2 = s1;   // shallow copy. Since we haven't defined a copy constructor, C++ generates a default copy constructor, which simply copies the pointer.
+    MyString s2 = s1;    // now deep copy
 
     s1.display();
     s2.display();
 }
+
+
+// Explanation
+// 1. Direct Initialization
+// MyString s1("Hello");
+// Creates a new object s1.
+// Calls the constructor MyString(const char*).
+// No temporary object is created.
+
+
+// 2. Copy Initialization
+// MyString s2 = s1;
+// Creates a new object s2.
+// Calls the copy constructor MyString(const MyString&).
+// Although '=' is written, this is NOT assignment because s2 does not exist yet.
+
+
+// 3. Direct Copy Initialization
+// MyString s3(s1);
+// Creates a new object s3.
+// Calls the copy constructor.
+// Equivalent to: MyString s3 = s1.
+
+
+// 4. Copy Assignment
+// s1 = s2;
+// s1 already exists.
+// Does NOT call the copy constructor.
+// Calls the copy assignment operator (operator=) to copy the contents of s2 into s1.
+
+
+// 5. Assignment from a Temporary Object
+// s1 = MyString("Hello");
+// Step 1: A temporary MyString object is created using the constructor.
+// Step 2: The temporary is assigned to the existing object s1 using operator=.
+// Step 3: The temporary object is destroyed automatically after the assignment.
+// Sequence: Constructor -> Copy Assignment Operator -> Destructor (temporary)
+
+
+// | Statement                 | Meaning                                                                      | Function Called                                     |
+// | ------------------------- | ---------------------------------------------------------------------------- | --------------------------------------------------- |
+// | `MyString s1("Hello");`   | Creates a new object using a C-string.                                       | Constructor                                         |
+// | `MyString s2 = s1;`       | Creates a new object as a copy of `s1`.                                      | Copy Constructor                                    |
+// | `MyString s2(s1);`        | Creates a new object as a copy of `s1` (same as above).                      | Copy Constructor                                    |
+// | `s1 = s2;`                | Copies data into an already existing object.                                 | Copy Assignment Operator (`operator=`)              |
+// | `s1 = MyString("Hello");` | Creates a temporary object, assigns it to `s1`, then destroys the temporary. | Constructor → Copy Assignment Operator → Destructor |
+
+
+// Object doesn't exist yet? → Constructor or Copy Constructor (Initialization)
+// Object already exists? → Copy Assignment Operator (Assignment)
