@@ -33,7 +33,11 @@ public:     // Functions provide controlled interaction with the object
     // Member Function Definition
     void setAccountHolder(string accountHolder);
     void setAccountNumber(int accountNumber);
-    void setBalance(double balance);
+
+    void deposit(double amount);
+    void withdraw(double amount);
+    void checkBalance();
+    
     string getAccountHolder();
     int getAccountNumber();
     double getBalance();
@@ -43,6 +47,48 @@ public:     // Functions provide controlled interaction with the object
     void displayAccount();
 };
 
+
+// Deposit money into the account
+// Instead of allowing users to directly modify the balance using setBalance(), we expose meaningful operations like deposit() and withdraw(). This hides the internal implementation and demonstrates abstraction.
+void BankAccount::deposit(double amount)
+{
+    if (amount > 0)
+    {
+        balance += amount;
+        cout << "Rs. " << amount << " deposited successfully.\n";
+    }
+    else
+    {
+        cout << "Invalid deposit amount.\n";
+    }
+}
+
+
+// Withdraw money from the account
+void BankAccount::withdraw(double amount)
+{
+    if (amount <= 0)
+    {
+        cout << "Invalid withdrawal amount.\n";
+    }
+    else if (amount > balance)
+    {
+        cout << "Insufficient Balance.\n";
+    }
+    else
+    {
+        balance -= amount;
+        cout << "Rs. " << amount << " withdrawn successfully.\n";
+    }
+}
+
+
+// Display only the current balance
+// The user only requests to check the balance. How the balance is stored or retrieved is hidden inside the class.
+void BankAccount::checkBalance()
+{
+    cout << "Current Balance : Rs. " << getBalance() << endl;
+}
 
 
 // Implement setters
@@ -57,18 +103,6 @@ void BankAccount::setAccountNumber(int accountNumber)
     this->accountNumber = accountNumber;
 }
 
-void BankAccount::setBalance(double balance)
-{
-    if(balance >= 0)
-    {
-        this->balance = balance;
-    }
-    else
-    {
-        cout << "Invalid Balance! Setting Balance to 0.\n";
-        this->balance = 0;
-    }
-}
 
 
 // Implement getters
@@ -88,12 +122,13 @@ double BankAccount::getBalance()
 }
 
 
+// displayAccount() uses getter functions instead of accessing data members directly. This shows that member functions can use other member functions, improving code reusability.
 void BankAccount::displayAccount()
 {
     cout << "\n----------------------------\n";
     cout << "Account Holder : " << getAccountHolder() << endl;
     cout << "Account Number : " << getAccountNumber() << endl;
-    cout << "Balance        : " << getBalance() << endl;
+    cout << "Balance        : Rs. " << getBalance() << endl;
     cout << "----------------------------\n";
 }
 
@@ -106,9 +141,16 @@ int main()
     int number;
     double balance;
 
-    // notice that now we are taking input inside int main only, not inside classes
-    // Input is taken in main(), not inside the class. This keeps the class independent of the input source (keyboard, file, database, API, GUI). The class only validates and stores the data using setters.
-    // Classes should focus on managing their own data and behavior, not on how data is entered. Input may come from a keyboard, file, database, or API. By taking input outside the class and passing values through setters or constructors, the class becomes reusable, easier to test, and independent of the input source.
+
+    // NOTE:
+    // Declaring member functions inside the class and defining them outside using the
+    // scope resolution operator (::) is NOT abstraction. It is simply a way to organize
+    // the code and separate the interface (what functions are available) from the
+    // implementation (how those functions work).
+    //
+    // Abstraction means hiding the internal implementation from the user and exposing
+    // only the necessary operations. For example, the user simply calls deposit() or
+    // withdraw() without knowing how the balance is validated or updated internally.
     cout << "Enter Account Holder Name : ";
     cin >> holder;
 
@@ -120,59 +162,21 @@ int main()
 
     account.setAccountHolder(holder);
     account.setAccountNumber(number);
-    account.setBalance(balance);
+    account.deposit(balance);
 
-    cout << "\nAccount Details\n";
-
+    cout << "\nInitial Account Details\n";
     account.displayAccount();
+
+    cout << "\nDepositing Rs. 2000...\n";
+    account.deposit(2000);
+    account.checkBalance();
+
+    cout << "\nWithdrawing Rs. 1500...\n";
+    account.withdraw(1500);
+    account.checkBalance();
+
+    cout << "\nTrying to withdraw Rs. 100000...\n";
+    account.withdraw(100000);
+    account.checkBalance();
 }
 
-
-// ============================================================================
-// Experiment 1: Read-only Property
-//
-// Objective:
-// Understand how to make a data member read-only.
-//
-// Steps:
-// 1. Temporarily comment out the setter (setAccountNumber()) and its definition.
-// 2. Keep only the getter (getAccountNumber()).
-// 3. Temporarily initialize accountNumber directly inside the class/constructor
-//    since it can no longer be set from outside.
-// 4. Try calling:
-//        account.getAccountNumber();      // ✅ Allowed
-//        account.setAccountNumber(1001);  // ❌ Compile Error (setter doesn't exist)
-//
-// Observation:
-// The value can be viewed but cannot be modified from outside the class.
-//
-// Real-world Examples:
-// Account Number, Employee ID, Roll Number, Aadhaar Number, etc.
-//
-// After understanding the concept, restore the setter.
-// ============================================================================
-
-// ============================================================================
-// Experiment 2: Write-only Property
-//
-// Objective:
-// Understand how to make a data member write-only.
-//
-// Steps:
-// 1. Add a private data member:
-//        string pin;
-// 2. Create only the setter:
-//        setPin(string pin);
-// 3. Do NOT create getPin().
-// 4. Try calling:
-//        account.setPin("1234");   // ✅ Allowed
-//        account.getPin();         // ❌ Compile Error (getter doesn't exist)
-//
-// Observation:
-// The value can be modified but cannot be read from outside the class.
-//
-// Real-world Examples:
-// Passwords, ATM PINs, Security Keys, OTPs, etc.
-//
-// After understanding the concept, remove the 'pin' data member and its setter.
-// ============================================================================
