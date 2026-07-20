@@ -30,6 +30,13 @@ private:    // Data is hidden inside the class
 
 public:     // Functions provide controlled interaction with the object
 
+    // ============================================================================
+    // Interface
+    //
+    // The class declaration represents the interface.
+    // It tells users WHAT operations are available, but not HOW they are performed.
+    // ============================================================================
+
     // Member Function Definition
     void setAccountHolder(string accountHolder);
     void setAccountNumber(int accountNumber);
@@ -48,8 +55,18 @@ public:     // Functions provide controlled interaction with the object
 };
 
 
+// ============================================================================
+// Implementation
+//
+// The function definitions represent the implementation.
+// This is where the actual business logic is written.
+// Users don't need to know these details.
+// ============================================================================
+
+
 // Deposit money into the account
 // Instead of allowing users to directly modify the balance using setBalance(), we expose meaningful operations like deposit() and withdraw(). This hides the internal implementation and demonstrates abstraction.
+// Implementation of deposit(). The user simply calls deposit(amount). The validation and balance update are hidden inside the class.
 void BankAccount::deposit(double amount)
 {
     if (amount > 0)
@@ -65,6 +82,7 @@ void BankAccount::deposit(double amount)
 
 
 // Withdraw money from the account
+// Implementation of withdraw(). The class checks whether sufficient balance exists before updating it. The user only requests the withdrawal.
 void BankAccount::withdraw(double amount)
 {
     if (amount <= 0)
@@ -85,6 +103,7 @@ void BankAccount::withdraw(double amount)
 
 // Display only the current balance
 // The user only requests to check the balance. How the balance is stored or retrieved is hidden inside the class.
+// Implementation of checkBalance(). The user requests the current balance without knowing how it is stored.
 void BankAccount::checkBalance()
 {
     cout << "Current Balance : Rs. " << getBalance() << endl;
@@ -142,15 +161,6 @@ int main()
     double balance;
 
 
-    // NOTE:
-    // Declaring member functions inside the class and defining them outside using the
-    // scope resolution operator (::) is NOT abstraction. It is simply a way to organize
-    // the code and separate the interface (what functions are available) from the
-    // implementation (how those functions work).
-    //
-    // Abstraction means hiding the internal implementation from the user and exposing
-    // only the necessary operations. For example, the user simply calls deposit() or
-    // withdraw() without knowing how the balance is validated or updated internally.
     cout << "Enter Account Holder Name : ";
     cin >> holder;
 
@@ -180,3 +190,49 @@ int main()
     account.checkBalance();
 }
 
+
+
+// ============================================================================
+// Understanding Interface vs Implementation
+//
+// Objective:
+// Understand that users interact only with the interface, while the
+// implementation remains hidden and can change without affecting user code.
+//
+// Steps:
+// 1. Keep the interface (function declarations) exactly the same.
+//        void deposit(double amount);
+//        void withdraw(double amount);
+//        void checkBalance();
+//
+// 2. Observe how main() calls only the interface.
+//        account.deposit(1000);
+//
+// 3. Now modify ONLY the implementation of deposit() by adding extra logic.
+//
+//        void BankAccount::deposit(double amount)
+//        {
+//            if(amount > 0)
+//            {
+//                balance += amount;
+//
+//                cout << "Transaction Logged\n";
+//                cout << "SMS Notification Sent\n";
+//                cout << "Email Notification Sent\n";
+//            }
+//        }
+//
+// 4. Run the program again. Notice that main() remains exactly the same.
+//        account.deposit(1000);
+//
+// Observation:
+// The implementation changed, but the interface remained unchanged.
+// The user still performs the same operation without knowing how it is
+// internally implemented.
+//
+// Conclusion:
+// Interface tells the user WHAT operations are available.
+// Implementation defines HOW those operations are performed.
+// Since users depend only on the interface, the internal implementation
+// can change freely without affecting the user code.
+// ============================================================================
