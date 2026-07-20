@@ -50,7 +50,17 @@ void BankAccount::createAccount()
 
     cout << "Enter Initial Balance : ";
     cin >> balance;
+
+    // Validation
+    if(balance < 0)
+    {
+        cout << "\nInitial Balance cannot be negative.\n";
+        cout << "Balance has been set to 0.\n\n";
+
+        balance = 0;
+    }
 }
+
 
 void BankAccount::displayAccount()
 {
