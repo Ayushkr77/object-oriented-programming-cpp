@@ -23,6 +23,8 @@ A **Virtual Function** is a member function that can be **overridden** by derive
 
 It allows a derived class to provide its own implementation.
 
+***A class is abstract if it has at least one pure virtual function that has not been implemented.***
+
 For now, just remember:
 
 ```text

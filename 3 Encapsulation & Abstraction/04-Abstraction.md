@@ -19,6 +19,8 @@ By the end of this module, you should understand:
 
 **Abstraction** is the process of **hiding unnecessary implementation details and exposing only the essential features required by the user.**
 
+***A class is abstract if it has at least one pure virtual function that has not been implemented.***
+
 The user knows **what** an object does, but not **how** it does it.
 
 ### ⭐ Notebook Definition
