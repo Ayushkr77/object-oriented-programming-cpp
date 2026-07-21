@@ -1,32 +1,90 @@
-// ============================================================================
-// Multiple Inheritance Example
-//
-// Walker        Swimmer
-//      \        /
-//       \      /
-//         Duck
-// ============================================================================
-
-#include <bits/stdc++.h>
+#include<bits/stdc++.h>
 using namespace std;
 
-class Walker
+// ============================================================================
+// Version 8
+//
+// Topics Covered:
+// - Hybrid Inheritance
+// - Combination of Multiple + Multilevel Inheritance
+// - Constructor Calling Order
+// - Destructor Calling Order
+
+        //           Animal
+        //              │
+        //              ▼
+        //            Bird
+        //              │
+        //              │
+        // Flyer        │        Swimmer
+        //    │         │           │
+        //    │         │           │
+        //    └─────────┼───────────┘
+        //              ▼
+        //            Duck
+// ============================================================================
+
+class Animal
 {
 public:
 
-    Walker()
+    Animal()
     {
-        cout << "Walker Constructor Called\n";
+        cout << "Animal Constructor Called\n";
     }
 
-    ~Walker()
+    ~Animal()
     {
-        cout << "Walker Destructor Called\n";
+        cout << "Animal Destructor Called\n";
     }
 
-    void walk()
+    void eat()
     {
-        cout << "Duck is walking.\n";
+        cout << "Animal is eating.\n";
+    }
+};
+
+
+
+class Bird : public Animal
+{
+public:
+
+    Bird()
+    {
+        cout << "Bird Constructor Called\n";
+    }
+
+    ~Bird()
+    {
+        cout << "Bird Destructor Called\n";
+    }
+
+    void layEggs()
+    {
+        cout << "Bird lays eggs.\n";
+    }
+};
+
+
+
+class Flyer
+{
+public:
+
+    Flyer()
+    {
+        cout << "Flyer Constructor Called\n";
+    }
+
+    ~Flyer()
+    {
+        cout << "Flyer Destructor Called\n";
+    }
+
+    void fly()
+    {
+        cout << "Duck is flying.\n";
     }
 };
 
@@ -54,7 +112,7 @@ public:
 
 
 
-class Duck : public Walker, public Swimmer
+class Duck : public Bird, public Flyer, public Swimmer
 {
 public:
 
@@ -78,26 +136,28 @@ public:
 
 int main()
 {
-    cout << "\n================ MULTIPLE INHERITANCE ================\n\n";
-
     Duck duck;
 
-    duck.walk();
+    cout << endl;
+
+    duck.eat();
+    duck.layEggs();
+    duck.fly();
     duck.swim();
     duck.quack();
 }
 
 
+
 // ============================================================================
-// Experiment 1 : Constructor Calling Order in Multiple Inheritance
+// Experiment 1 : Constructor Calling Order
 //
 // Objective:
-// Observe the order in which constructors are called when a class
-// inherits from multiple base classes.
+// Observe constructor execution in Hybrid Inheritance.
 //
 // Steps:
 //
-// 1. Create an object:
+// 1. Create:
 //
 //        Duck duck;
 //
@@ -105,145 +165,96 @@ int main()
 //
 // Observation:
 //
-// Walker Constructor Called
+// Animal Constructor Called
+// Bird Constructor Called
+// Flyer Constructor Called
 // Swimmer Constructor Called
 // Duck Constructor Called
 //
-// Notice that the constructors of the base classes execute first,
-// following the order in which they are inherited:
-//
-//        class Duck : public Walker, public Swimmer
-//
 // Conclusion:
 //
-// In Multiple Inheritance, base class constructors are called
-// from left to right (as written in the inheritance list),
-// followed by the derived class constructor.
+// Constructors execute from base classes to the derived class,
+// following the inheritance hierarchy.
 // ============================================================================
 
 
 
 // ============================================================================
-// Experiment 2 : Destructor Calling Order in Multiple Inheritance
+// Experiment 2 : Destructor Calling Order
 //
 // Objective:
-// Observe the order in which destructors are called.
+// Observe destructor execution.
 //
 // Steps:
 //
 // 1. Run the program.
 //
-// 2. Observe the last lines of the output.
+// 2. Observe the last lines.
 //
 // Observation:
 //
 // Duck Destructor Called
 // Swimmer Destructor Called
-// Walker Destructor Called
-//
-// Notice that destructors execute in the exact reverse order
-// of constructors.
+// Flyer Destructor Called
+// Bird Destructor Called
+// Animal Destructor Called
 //
 // Conclusion:
 //
-// In Multiple Inheritance, destructors are called in reverse order:
-// Derived Class → Rightmost Base Class → Leftmost Base Class.
+// Destructors execute in the reverse order of constructors.
 // ============================================================================
 
 
 
 // ============================================================================
-// Experiment 3 : Accessing Members from Multiple Base Classes
+// Experiment 3 : Hybrid Inheritance
 //
 // Objective:
-// Understand how the derived class reuses members from multiple parents.
+// Identify why this hierarchy is called Hybrid.
 //
 // Steps:
 //
-// 1. Observe that Duck defines only:
+// Observe:
 //
-//        quack();
+// Animal → Bird
 //
-// 2. Duck does NOT define:
+// (Multilevel)
 //
-//        walk();
-//        swim();
+// Duck inherits from:
 //
-// 3. Yet the following calls work:
+// Bird
+// Flyer
+// Swimmer
 //
-//        duck.walk();
-//        duck.swim();
+// (Multiple)
 //
 // Observation:
 //
-// Duck inherits walk() from Walker
-// and swim() from Swimmer.
+// The hierarchy combines multiple inheritance types.
 //
 // Conclusion:
 //
-// Multiple Inheritance allows a class to reuse functionality
-// from more than one base class.
+// Hybrid Inheritance is simply a combination of two or more
+// inheritance types.
 // ============================================================================
 
 
 
 // ============================================================================
-// Experiment 4 : Base Class Order Matters
+// Experiment 4 : Removing One Parent
 //
 // Objective:
-// Observe that the inheritance order controls the constructor order.
+// Observe inherited functionality.
 //
 // Steps:
 //
-// 1. Change:
-//
-//        class Duck : public Walker, public Swimmer
-//
-// to
-//
-//        class Duck : public Swimmer, public Walker
-//
-// 2. Run the program.
-//
-// Observation:
-//
-// Swimmer Constructor Called
-// Walker Constructor Called
-// Duck Constructor Called
-//
-// Destructors:
-//
-// Duck Destructor Called
-// Walker Destructor Called
-// Swimmer Destructor Called
-//
-// Conclusion:
-//
-// The order of base classes in the inheritance list determines:
-//
-// • Constructor execution order
-// • Destructor execution order
-// ============================================================================
-
-
-
-// ============================================================================
-// Experiment 5 : Removing One Base Class
-//
-// Objective:
-// Understand what functionality comes from each base class.
-//
-// Steps:
-//
-// 1. Remove:
+// Remove:
 //
 //        public Swimmer
 //
 // from Duck.
 //
-// 2. Compile the program.
-//
-// 3. Try:
+// Try:
 //
 //        duck.swim();
 //
@@ -251,9 +262,35 @@ int main()
 //
 // Compilation Error.
 //
-// Duck no longer inherits swim() because Swimmer has been removed.
+// Conclusion:
+//
+// Every parent contributes its own members.
+// ============================================================================
+
+
+
+// ============================================================================
+// Experiment 5 : Constructor Order Depends on Inheritance List
+//
+// Objective:
+// Observe constructor execution order.
+//
+// Steps:
+//
+// Change:
+//
+// class Duck : public Bird, public Flyer, public Swimmer
+//
+// to
+//
+// class Duck : public Swimmer, public Flyer, public Bird
+//
+// Observation:
+//
+// Constructors execute in the same order as the inheritance list.
 //
 // Conclusion:
 //
-// Every base class contributes its own members to the derived class.
+// Constructor order depends on the order of base classes
+// in the inheritance list.
 // ============================================================================
