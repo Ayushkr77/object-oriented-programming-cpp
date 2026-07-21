@@ -1,139 +1,76 @@
 // ============================================================================
-// Version 6
+// Multiple Inheritance Example
 //
-// Topics Covered:
-// - Hierarchical Inheritance
-// - Constructor Calling Order
-// - Destructor Calling Order
+// Walker        Swimmer
+//      \        /
+//       \      /
+//         Duck
 // ============================================================================
 
-#include<bits/stdc++.h>
+#include <bits/stdc++.h>
 using namespace std;
 
-class Animal
-{
-protected:
-    string name;
-    int age;
-
-public:
-
-    Animal()
-    {
-        cout << "Animal Constructor Called\n";
-    }
-
-    ~Animal()
-    {
-        cout << "Animal Destructor Called\n";
-    }
-
-    void setName(string name)
-    {
-        this->name = name;
-    }
-
-    void setAge(int age)
-    {
-        this->age = age;
-    }
-
-    void eat()
-    {
-        cout << name << " is eating.\n";
-    }
-
-    void sleep()
-    {
-        cout << name << " is sleeping.\n";
-    }
-};
-
-
-
-class Mammal : public Animal
+class Walker
 {
 public:
 
-    Mammal()
+    Walker()
     {
-        cout << "Mammal Constructor Called\n";
+        cout << "Walker Constructor Called\n";
     }
 
-    ~Mammal()
+    ~Walker()
     {
-        cout << "Mammal Destructor Called\n";
+        cout << "Walker Destructor Called\n";
     }
 
     void walk()
     {
-        cout << name << " is walking.\n";
+        cout << "Duck is walking.\n";
     }
 };
 
 
 
-class Dog : public Mammal
+class Swimmer
 {
 public:
 
-    Dog()
+    Swimmer()
     {
-        cout << "Dog Constructor Called\n";
+        cout << "Swimmer Constructor Called\n";
     }
 
-    ~Dog()
+    ~Swimmer()
     {
-        cout << "Dog Destructor Called\n";
+        cout << "Swimmer Destructor Called\n";
     }
 
-    void bark()
+    void swim()
     {
-        cout << name << " says: Bark Bark!\n";
+        cout << "Duck is swimming.\n";
     }
 };
 
 
 
-class Cat : public Mammal
+class Duck : public Walker, public Swimmer
 {
 public:
 
-    Cat()
+    Duck()
     {
-        cout << "Cat Constructor Called\n";
+        cout << "Duck Constructor Called\n";
     }
 
-    ~Cat()
+    ~Duck()
     {
-        cout << "Cat Destructor Called\n";
+        cout << "Duck Destructor Called\n";
     }
 
-    void meow()
+    void quack()
     {
-        cout << name << " says: Meow Meow!\n";
-    }
-};
-
-
-
-class Horse : public Mammal
-{
-public:
-
-    Horse()
-    {
-        cout << "Horse Constructor Called\n";
-    }
-
-    ~Horse()
-    {
-        cout << "Horse Destructor Called\n";
-    }
-
-    void neigh()
-    {
-        cout << name << " says: Neigh!\n";
+        cout << "Duck says: Quack Quack!\n";
     }
 };
 
@@ -141,117 +78,182 @@ public:
 
 int main()
 {
-    cout << "========== DOG ==========\n";
+    cout << "\n================ MULTIPLE INHERITANCE ================\n\n";
 
-    Dog dog;
-    dog.setName("Bruno");
-    dog.setAge(3);
+    Duck duck;
 
-    dog.eat();
-    dog.sleep();
-    dog.walk();
-    dog.bark();
-
-
-    cout << "\n========== CAT ==========\n";
-
-    Cat cat;
-    cat.setName("Kitty");
-    cat.setAge(2);
-
-    cat.eat();
-    cat.sleep();
-    cat.walk();
-    cat.meow();
-
-
-    cout << "\n========== HORSE ==========\n";
-
-    Horse horse;
-    horse.setName("Thunder");
-    horse.setAge(5);
-
-    horse.eat();
-    horse.sleep();
-    horse.walk();
-    horse.neigh();
+    duck.walk();
+    duck.swim();
+    duck.quack();
 }
 
 
-
 // ============================================================================
-// Experiment 1 : Constructor Order
+// Experiment 1 : Constructor Calling Order in Multiple Inheritance
 //
 // Objective:
-// Observe constructor execution for different derived classes.
+// Observe the order in which constructors are called when a class
+// inherits from multiple base classes.
 //
 // Steps:
 //
-// 1. Create Dog, Cat and Horse objects.
+// 1. Create an object:
 //
-// Observation:
-//
-// Every object calls:
-//
-// Animal Constructor
-// Mammal Constructor
-// Derived Class Constructor
-//
-// independently.
-//
-// Conclusion:
-//
-// Every derived object constructs its own inheritance chain.
-// ============================================================================
-
-
-
-// ============================================================================
-// Experiment 2 : Code Reusability
-//
-// Objective:
-// Observe inherited members.
-//
-// Steps:
-//
-// 1. Notice Dog, Cat and Horse do not define:
-//
-// eat()
-// sleep()
-// walk()
-//
-// 2. Yet all objects successfully call them.
-//
-// Observation:
-//
-// Common functionality is written once in Mammal and Animal
-// and reused by every derived class.
-//
-// Conclusion:
-//
-// Hierarchical Inheritance improves code reusability.
-// ============================================================================
-
-
-
-// ============================================================================
-// Experiment 3 : Independent Objects
-//
-// Objective:
-// Understand that derived classes are independent.
-//
-// Steps:
-//
-// 1. Remove class Cat.
+//        Duck duck;
 //
 // 2. Run the program.
 //
 // Observation:
 //
-// Dog and Horse continue working normally.
+// Walker Constructor Called
+// Swimmer Constructor Called
+// Duck Constructor Called
+//
+// Notice that the constructors of the base classes execute first,
+// following the order in which they are inherited:
+//
+//        class Duck : public Walker, public Swimmer
 //
 // Conclusion:
 //
-// In Hierarchical Inheritance, sibling classes do not depend on
-// one another. They only depend on their common base class.
+// In Multiple Inheritance, base class constructors are called
+// from left to right (as written in the inheritance list),
+// followed by the derived class constructor.
+// ============================================================================
+
+
+
+// ============================================================================
+// Experiment 2 : Destructor Calling Order in Multiple Inheritance
+//
+// Objective:
+// Observe the order in which destructors are called.
+//
+// Steps:
+//
+// 1. Run the program.
+//
+// 2. Observe the last lines of the output.
+//
+// Observation:
+//
+// Duck Destructor Called
+// Swimmer Destructor Called
+// Walker Destructor Called
+//
+// Notice that destructors execute in the exact reverse order
+// of constructors.
+//
+// Conclusion:
+//
+// In Multiple Inheritance, destructors are called in reverse order:
+// Derived Class → Rightmost Base Class → Leftmost Base Class.
+// ============================================================================
+
+
+
+// ============================================================================
+// Experiment 3 : Accessing Members from Multiple Base Classes
+//
+// Objective:
+// Understand how the derived class reuses members from multiple parents.
+//
+// Steps:
+//
+// 1. Observe that Duck defines only:
+//
+//        quack();
+//
+// 2. Duck does NOT define:
+//
+//        walk();
+//        swim();
+//
+// 3. Yet the following calls work:
+//
+//        duck.walk();
+//        duck.swim();
+//
+// Observation:
+//
+// Duck inherits walk() from Walker
+// and swim() from Swimmer.
+//
+// Conclusion:
+//
+// Multiple Inheritance allows a class to reuse functionality
+// from more than one base class.
+// ============================================================================
+
+
+
+// ============================================================================
+// Experiment 4 : Base Class Order Matters
+//
+// Objective:
+// Observe that the inheritance order controls the constructor order.
+//
+// Steps:
+//
+// 1. Change:
+//
+//        class Duck : public Walker, public Swimmer
+//
+// to
+//
+//        class Duck : public Swimmer, public Walker
+//
+// 2. Run the program.
+//
+// Observation:
+//
+// Swimmer Constructor Called
+// Walker Constructor Called
+// Duck Constructor Called
+//
+// Destructors:
+//
+// Duck Destructor Called
+// Walker Destructor Called
+// Swimmer Destructor Called
+//
+// Conclusion:
+//
+// The order of base classes in the inheritance list determines:
+//
+// • Constructor execution order
+// • Destructor execution order
+// ============================================================================
+
+
+
+// ============================================================================
+// Experiment 5 : Removing One Base Class
+//
+// Objective:
+// Understand what functionality comes from each base class.
+//
+// Steps:
+//
+// 1. Remove:
+//
+//        public Swimmer
+//
+// from Duck.
+//
+// 2. Compile the program.
+//
+// 3. Try:
+//
+//        duck.swim();
+//
+// Observation:
+//
+// Compilation Error.
+//
+// Duck no longer inherits swim() because Swimmer has been removed.
+//
+// Conclusion:
+//
+// Every base class contributes its own members to the derived class.
 // ============================================================================
