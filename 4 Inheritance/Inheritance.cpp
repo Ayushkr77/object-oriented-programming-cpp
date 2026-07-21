@@ -2,13 +2,13 @@
 using namespace std;
 
 // ============================================================================
-// Version 9
+// Version 10
 //
 // Topics Covered:
-// - Diamond Problem
-// - Multiple Inheritance
-// - Ambiguous Member Access
-// - Duplicate Base Class Objects
+// - Virtual Inheritance
+// - Solving the Diamond Problem
+// - Shared Base Class Object
+// - Constructor Behavior
 // ============================================================================
 
 class Animal
@@ -30,7 +30,8 @@ public:
 
 
 
-class Mammal : public Animal
+// Virtual Inheritance
+class Mammal : virtual public Animal
 {
 public:
 
@@ -47,7 +48,8 @@ public:
 
 
 
-class Pet : public Animal
+// Virtual Inheritance
+class Pet : virtual public Animal
 {
 public:
 
@@ -68,7 +70,8 @@ class Dog : public Mammal, public Pet
 {
 public:
 
-    Dog()
+    // The most derived class constructs the virtual base class.
+    Dog() : Animal()
     {
         cout << "Dog Constructor Called\n";
     }
@@ -85,40 +88,57 @@ int main()
 {
     Dog dog;
 
-    // dog.name = "Bruno";      // ❌ Compile Error
-    // cout << dog.name;        // ❌ Compile Error
+    cout << endl;
 
-    // Why?
-    //
-    // Dog contains TWO Animal objects:
-    //
-    // Mammal -> Animal
-    // Pet -> Animal
-    //
-    // Therefore, the compiler doesn't know
-    // which 'name' should be accessed.
+    // No ambiguity anymore.
+    dog.name = "Bruno";
 
-    dog.Mammal::name = "Bruno";
-    dog.Pet::name = "Rocky";
-
-    cout << "Name through Mammal : "
-         << dog.Mammal::name << endl;
-
-    cout << "Name through Pet : "
-         << dog.Pet::name << endl;
+    cout << "Dog Name : " << dog.name << endl;
 }
 
 
 
 // ============================================================================
-// Experiment 1 : Ambiguous Member Access
+// Experiment 1 : Constructor Calling Order
 //
 // Objective:
-// Observe the ambiguity created by duplicate base class objects.
+// Observe constructor execution with Virtual Inheritance.
 //
 // Steps:
 //
-// 1. Uncomment:
+// 1. Create:
+//
+//        Dog dog;
+//
+// 2. Run the program.
+//
+// Observation:
+//
+// Animal Constructor Called
+// Mammal Constructor Called
+// Pet Constructor Called
+// Dog Constructor Called
+//
+// Notice:
+//
+// Animal Constructor is called ONLY ONCE.
+//
+// Conclusion:
+//
+// Virtual Inheritance creates a single shared Animal object.
+// ============================================================================
+
+
+
+// ============================================================================
+// Experiment 2 : Ambiguity Removed
+//
+// Objective:
+// Verify that ambiguity no longer exists.
+//
+// Steps:
+//
+// 1. Write:
 //
 //        dog.name = "Bruno";
 //
@@ -126,107 +146,97 @@ int main()
 //
 // Observation:
 //
-// Compilation Error:
-//
-// request for member 'name' is ambiguous
+// Program compiles successfully.
 //
 // Conclusion:
 //
-// Dog contains two copies of Animal.
-// The compiler cannot determine which 'name' is intended.
+// Since only one Animal object exists,
+// member access is no longer ambiguous.
 // ============================================================================
 
 
 
 // ============================================================================
-// Experiment 2 : Duplicate Base Class Objects
+// Experiment 3 : Shared Base Class
 //
 // Objective:
-// Observe that Dog contains two Animal objects.
+// Observe that Mammal and Pet share the same Animal object.
 //
 // Steps:
 //
 // 1. Assign:
 //
-//        dog.Mammal::name = "Bruno";
+//        dog.name = "Charlie";
 //
-//        dog.Pet::name = "Rocky";
+// 2. Print:
 //
-// 2. Print both.
+//        cout << dog.name;
 //
 // Observation:
 //
-// Bruno
-// Rocky
+// Only one value exists because there is only one Animal object.
 //
 // Conclusion:
 //
-// Mammal and Pet each maintain their own independent Animal object.
+// Virtual Inheritance creates one shared base class object.
 // ============================================================================
 
 
 
 // ============================================================================
-// Experiment 3 : Constructor Calling Order
+// Experiment 4 : Remove 'virtual'
 //
 // Objective:
-// Observe constructor execution.
+// Observe what happens when Virtual Inheritance is removed.
+//
+// Steps:
+//
+// 1. Change:
+//
+//        class Mammal : public Animal
+//
+//        class Pet : public Animal
+//
+// 2. Compile.
 //
 // Observation:
 //
-// Animal Constructor
-// Mammal Constructor
-// Animal Constructor
-// Pet Constructor
-// Dog Constructor
+// dog.name becomes ambiguous.
+//
+// Animal Constructor is called twice.
 //
 // Conclusion:
 //
-// Animal constructor executes twice because
-// two Animal objects are created.
+// Removing virtual recreates the Diamond Problem.
 // ============================================================================
 
 
 
 // ============================================================================
-// Experiment 4 : Destructor Calling Order
+// Experiment 5 : Most Derived Class Constructs Virtual Base. Problem in this.
 //
 // Objective:
-// Observe destructor execution.
+// Understand constructor behavior.
+//
+// Steps:
+//
+// 1. Observe:
+//
+//        Dog() : Animal()
+//
+// 2. Remove:
+//
+//        : Animal()
+//
+// 3. Compile and run.
 //
 // Observation:
 //
-// Dog Destructor
-// Pet Destructor
-// Animal Destructor
-// Mammal Destructor
-// Animal Destructor
+// Animal is still constructed once because it has a default constructor.
+// If Animal required parameters, Dog would be responsible for providing them.
 //
 // Conclusion:
 //
-// Two Animal objects are destroyed independently.
-// ============================================================================
-
-
-
-// ============================================================================
-// Experiment 5 : Why Virtual Inheritance?
-//
-// Objective:
-// Understand why Virtual Inheritance exists.
-//
-// Observation:
-//
-// The duplicate Animal objects cause:
-//
-// • Memory duplication
-// • Ambiguous member access
-// • Constructor called twice
-// • Destructor called twice
-//
-// Conclusion:
-//
-// Version 10 will solve all these problems using:
-//
-//        virtual public Animal
+// The most derived class is responsible for constructing
+// the virtual base class.
 // ============================================================================
