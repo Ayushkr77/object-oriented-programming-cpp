@@ -4,14 +4,14 @@
 using namespace std;
 
 // ============================================================================
-// Version 4
+// Version 5
 //
 // Topics Covered:
+// - Multilevel Inheritance
 // - Constructor Calling Order
 // - Destructor Calling Order
 // - Constructor Chaining
 // - Destructor Chaining
-// - Reverse Order Principle
 // ============================================================================
 
 
@@ -28,13 +28,11 @@ protected:
 
 public:
 
-    // Base Class Constructor
     Animal()
     {
         cout << "Animal Constructor Called\n";
     }
 
-    // Base Class Destructor
     ~Animal()
     {
         cout << "Animal Destructor Called\n";
@@ -64,19 +62,52 @@ public:
 
 
 // ============================================================================
-// Derived Class
+// Intermediate Class
+//
+// Mammal inherits Animal.
+// Dog will inherit Mammal.
+// This creates a Multilevel Inheritance chain.
+//
+// Animal
+//    ▲
+// Mammal
+//    ▲
+// Dog
 // ============================================================================
-class Dog : public Animal
+class Mammal : public Animal
 {
 public:
 
-    // Derived Class Constructor
+    Mammal()
+    {
+        cout << "Mammal Constructor Called\n";
+    }
+
+    ~Mammal()
+    {
+        cout << "Mammal Destructor Called\n";
+    }
+
+    void walk()
+    {
+        cout << name << " is walking.\n";
+    }
+};
+
+
+
+// ============================================================================
+// Derived Class
+// ============================================================================
+class Dog : public Mammal
+{
+public:
+
     Dog()
     {
         cout << "Dog Constructor Called\n";
     }
 
-    // Derived Class Destructor
     ~Dog()
     {
         cout << "Dog Destructor Called\n";
@@ -91,7 +122,7 @@ public:
 
     void displayDetails()
     {
-        cout << "Dog Details\n\n";
+        cout << "\nDog Details\n\n";
 
         cout << "Name  : " << name << endl;
         cout << "Age   : " << age << endl;
@@ -113,10 +144,96 @@ int main()
 
     dog.displayDetails();
 
-    dog.eat();
-    dog.sleep();
-    dog.bark();
-
-    // When main() finishes, the object 'dog' goes out of scope.
-    // C++ automatically calls the destructors in reverse order.
+    dog.eat();      // Animal
+    dog.sleep();    // Animal
+    dog.walk();     // Mammal
+    dog.bark();     // Dog
 }
+
+
+
+// ============================================================================
+// Experiment 1 : Constructor Calling Order
+//
+// Objective:
+// Observe constructor execution in Multilevel Inheritance.
+//
+// Steps:
+//
+// 1. Create:
+//
+//        Dog dog;
+//
+// 2. Run the program.
+//
+// Observation:
+//
+// Animal Constructor Called
+// Mammal Constructor Called
+// Dog Constructor Called
+//
+// Conclusion:
+//
+// Constructors execute from the Base Class towards the
+// most Derived Class.
+// ============================================================================
+
+
+
+// ============================================================================
+// Experiment 2 : Destructor Calling Order
+//
+// Objective:
+// Observe destructor execution in Multilevel Inheritance.
+//
+// Steps:
+//
+// 1. Run the program.
+//
+// 2. Observe the last lines printed.
+//
+// Observation:
+//
+// Dog Destructor Called
+// Mammal Destructor Called
+// Animal Destructor Called
+//
+// Conclusion:
+//
+// Destructors execute in the exact reverse order of constructors.
+// ============================================================================
+
+
+
+// ============================================================================
+// Experiment 3 : Indirect Inheritance
+//
+// Objective:
+// Understand indirect inheritance.
+//
+// Steps:
+//
+// 1. Observe Dog does NOT contain:
+//
+//        eat()
+//        sleep()
+//
+// 2. Observe Mammal does NOT contain:
+//
+//        eat()
+//        sleep()
+//
+// 3. Yet Dog successfully calls:
+//
+//        dog.eat();
+//        dog.sleep();
+//
+// Observation:
+//
+// Dog inherits these members indirectly from Animal through Mammal.
+//
+// Conclusion:
+//
+// A derived class inherits all accessible members of every
+// ancestor class.
+// ============================================================================
