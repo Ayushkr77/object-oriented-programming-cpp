@@ -1,28 +1,18 @@
-// note that in this file, many commits will be there, those are versions which represents the learning progress how we learnt each thing one by one. Try to see all the commits of this file. Also, see every block, every comment, and every change carefully.
+// ============================================================================
+// Version 6
+//
+// Topics Covered:
+// - Hierarchical Inheritance
+// - Constructor Calling Order
+// - Destructor Calling Order
+// ============================================================================
 
 #include<bits/stdc++.h>
 using namespace std;
 
-// ============================================================================
-// Version 5
-//
-// Topics Covered:
-// - Multilevel Inheritance
-// - Constructor Calling Order
-// - Destructor Calling Order
-// - Constructor Chaining
-// - Destructor Chaining
-// ============================================================================
-
-
-
-// ============================================================================
-// Base Class
-// ============================================================================
 class Animal
 {
 protected:
-
     string name;
     int age;
 
@@ -61,19 +51,6 @@ public:
 
 
 
-// ============================================================================
-// Intermediate Class
-//
-// Mammal inherits Animal.
-// Dog will inherit Mammal.
-// This creates a Multilevel Inheritance chain.
-//
-// Animal
-//    ▲
-// Mammal
-//    ▲
-// Dog
-// ============================================================================
 class Mammal : public Animal
 {
 public:
@@ -96,9 +73,6 @@ public:
 
 
 
-// ============================================================================
-// Derived Class
-// ============================================================================
 class Dog : public Mammal
 {
 public:
@@ -113,22 +87,53 @@ public:
         cout << "Dog Destructor Called\n";
     }
 
-    string breed;
-
     void bark()
     {
         cout << name << " says: Bark Bark!\n";
     }
+};
 
-    void displayDetails()
+
+
+class Cat : public Mammal
+{
+public:
+
+    Cat()
     {
-        cout << "\nDog Details\n\n";
+        cout << "Cat Constructor Called\n";
+    }
 
-        cout << "Name  : " << name << endl;
-        cout << "Age   : " << age << endl;
-        cout << "Breed : " << breed << endl;
+    ~Cat()
+    {
+        cout << "Cat Destructor Called\n";
+    }
 
-        cout << endl;
+    void meow()
+    {
+        cout << name << " says: Meow Meow!\n";
+    }
+};
+
+
+
+class Horse : public Mammal
+{
+public:
+
+    Horse()
+    {
+        cout << "Horse Constructor Called\n";
+    }
+
+    ~Horse()
+    {
+        cout << "Horse Destructor Called\n";
+    }
+
+    void neigh()
+    {
+        cout << name << " says: Neigh!\n";
     }
 };
 
@@ -136,104 +141,117 @@ public:
 
 int main()
 {
-    Dog dog;
+    cout << "========== DOG ==========\n";
 
+    Dog dog;
     dog.setName("Bruno");
     dog.setAge(3);
-    dog.breed = "Golden Retriever";
 
-    dog.displayDetails();
+    dog.eat();
+    dog.sleep();
+    dog.walk();
+    dog.bark();
 
-    dog.eat();      // Animal
-    dog.sleep();    // Animal
-    dog.walk();     // Mammal
-    dog.bark();     // Dog
+
+    cout << "\n========== CAT ==========\n";
+
+    Cat cat;
+    cat.setName("Kitty");
+    cat.setAge(2);
+
+    cat.eat();
+    cat.sleep();
+    cat.walk();
+    cat.meow();
+
+
+    cout << "\n========== HORSE ==========\n";
+
+    Horse horse;
+    horse.setName("Thunder");
+    horse.setAge(5);
+
+    horse.eat();
+    horse.sleep();
+    horse.walk();
+    horse.neigh();
 }
 
 
 
 // ============================================================================
-// Experiment 1 : Constructor Calling Order
+// Experiment 1 : Constructor Order
 //
 // Objective:
-// Observe constructor execution in Multilevel Inheritance.
+// Observe constructor execution for different derived classes.
 //
 // Steps:
 //
-// 1. Create:
+// 1. Create Dog, Cat and Horse objects.
 //
-//        Dog dog;
+// Observation:
+//
+// Every object calls:
+//
+// Animal Constructor
+// Mammal Constructor
+// Derived Class Constructor
+//
+// independently.
+//
+// Conclusion:
+//
+// Every derived object constructs its own inheritance chain.
+// ============================================================================
+
+
+
+// ============================================================================
+// Experiment 2 : Code Reusability
+//
+// Objective:
+// Observe inherited members.
+//
+// Steps:
+//
+// 1. Notice Dog, Cat and Horse do not define:
+//
+// eat()
+// sleep()
+// walk()
+//
+// 2. Yet all objects successfully call them.
+//
+// Observation:
+//
+// Common functionality is written once in Mammal and Animal
+// and reused by every derived class.
+//
+// Conclusion:
+//
+// Hierarchical Inheritance improves code reusability.
+// ============================================================================
+
+
+
+// ============================================================================
+// Experiment 3 : Independent Objects
+//
+// Objective:
+// Understand that derived classes are independent.
+//
+// Steps:
+//
+// 1. Remove class Cat.
 //
 // 2. Run the program.
 //
 // Observation:
 //
-// Animal Constructor Called
-// Mammal Constructor Called
-// Dog Constructor Called
+// Dog and Horse continue working normally.
 //
 // Conclusion:
 //
-// Constructors execute from the Base Class towards the
-// most Derived Class.
-// ============================================================================
-
-
-
-// ============================================================================
-// Experiment 2 : Destructor Calling Order
-//
-// Objective:
-// Observe destructor execution in Multilevel Inheritance.
-//
-// Steps:
-//
-// 1. Run the program.
-//
-// 2. Observe the last lines printed.
-//
-// Observation:
-//
-// Dog Destructor Called
-// Mammal Destructor Called
-// Animal Destructor Called
-//
-// Conclusion:
-//
-// Destructors execute in the exact reverse order of constructors.
-// ============================================================================
-
-
-
-// ============================================================================
-// Experiment 3 : Indirect Inheritance
-//
-// Objective:
-// Understand indirect inheritance.
-//
-// Steps:
-//
-// 1. Observe Dog does NOT contain:
-//
-//        eat()
-//        sleep()
-//
-// 2. Observe Mammal does NOT contain:
-//
-//        eat()
-//        sleep()
-//
-// 3. Yet Dog successfully calls:
-//
-//        dog.eat();
-//        dog.sleep();
-//
-// Observation:
-//
-// Dog inherits these members indirectly from Animal through Mammal.
-//
-// Conclusion:
-//
-// A derived class inherits all accessible members of every
-// ancestor class.
+// In Hierarchical Inheritance, sibling classes do not depend on
+// one another. They only depend on their common base class.
 // ============================================================================
