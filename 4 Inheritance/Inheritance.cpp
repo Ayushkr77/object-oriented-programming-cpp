@@ -4,13 +4,14 @@
 using namespace std;
 
 // ============================================================================
-// Version 2
+// Version 3
 //
 // Topics Covered:
-// - Protected Members
-// - Difference between private and protected
-// - Accessibility Rules
-// - Controlled Access
+// - Constructor Calling Order
+// - Base Class Constructor
+// - Derived Class Constructor
+// - Constructor Chaining
+// - Order of Execution
 // ============================================================================
 
 
@@ -22,7 +23,7 @@ using namespace std;
 // It contains the common properties and behaviors that can be reused
 // by derived classes.
 //
-// The common data members are now protected.
+// The common data members are protected.
 // This allows derived classes to access them directly while preventing
 // outside code from accessing them.
 // ============================================================================
@@ -34,6 +35,12 @@ protected:
     int age;
 
 public:
+
+    // Base Class Constructor
+    Animal()
+    {
+        cout << "Animal Constructor Called\n";
+    }
 
     // Setter Functions
     void setName(string name)
@@ -72,6 +79,12 @@ class Dog : public Animal
 {
 public:
 
+    // Derived Class Constructor
+    Dog()
+    {
+        cout << "Dog Constructor Called\n";
+    }
+
     string breed;
 
     void bark()
@@ -95,6 +108,9 @@ public:
 
 int main()
 {
+    // Constructor Chaining starts here.
+    // First Animal() is called automatically.
+    // Then Dog() is called automatically.
     Dog dog;
 
     // Protected members cannot be accessed directly from outside the class.
@@ -121,71 +137,58 @@ int main()
 
 
 // ============================================================================
-// Experiment 1: Understanding private
+// Experiment 1: Constructor Calling Order
 //
 // Objective:
-// See why private is too restrictive.
+// Understand the constructor execution sequence.
 //
 // Steps:
 //
-// 1. Replace
+// 1. Create an object:
 //
-//        protected:
+//        Dog dog;
 //
-// with
-//
-//        private:
-//
-// 2. Compile the program.
+// 2. Run the program.
 //
 // Observation:
 //
-// displayDetails() and bark() will produce compilation errors because
-// private members cannot be directly accessed by derived classes.
+// Animal Constructor Called
+// Dog Constructor Called
 //
 // Conclusion:
 //
-// private completely hides members from derived classes.
+// The Base Class constructor always executes before the Derived Class
+// constructor.
 // ============================================================================
 
 
 
 // ============================================================================
-// Experiment 2: Understanding protected
+// Experiment 2: Constructor Chaining
 //
 // Objective:
-// Understand why protected exists.
+// Understand that constructor chaining happens automatically.
 //
 // Steps:
 //
-// 1. Keep
+// 1. Observe that you only created:
 //
-//        protected:
+//        Dog dog;
 //
-// 2. Inside Dog, access:
+// 2. Notice that you never explicitly called:
 //
-//        cout << name;
-//        cout << age;
+//        Animal();
 //
-// 3. Compile.
-//
-// Observation:
-//
-// The program works.
-//
-// 4. Now try in main():
-//
-//        dog.name = "Rocky";
-//
-// Compile again.
+// 3. Run the program.
 //
 // Observation:
 //
-// Compilation fails because protected members cannot be accessed
-// directly from outside the class.
+// Even though Animal() was never called manually,
+// it executes automatically before Dog().
 //
 // Conclusion:
 //
-// protected allows access inside the inheritance hierarchy while
-// still hiding members from outside code.
+// C++ automatically calls the Base Class constructor before the
+// Derived Class constructor. This automatic sequence is called
+// Constructor Chaining.
 // ============================================================================
