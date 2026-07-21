@@ -2,31 +2,20 @@
 using namespace std;
 
 // ============================================================================
-// Version 8
+// Version 9
 //
 // Topics Covered:
-// - Hybrid Inheritance
-// - Combination of Multiple + Multilevel Inheritance
-// - Constructor Calling Order
-// - Destructor Calling Order
-
-        //           Animal
-        //              │
-        //              ▼
-        //            Bird
-        //              │
-        //              │
-        // Flyer        │        Swimmer
-        //    │         │           │
-        //    │         │           │
-        //    └─────────┼───────────┘
-        //              ▼
-        //            Duck
+// - Diamond Problem
+// - Multiple Inheritance
+// - Ambiguous Member Access
+// - Duplicate Base Class Objects
 // ============================================================================
 
 class Animal
 {
 public:
+
+    string name;
 
     Animal()
     {
@@ -37,98 +26,56 @@ public:
     {
         cout << "Animal Destructor Called\n";
     }
+};
 
-    void eat()
+
+
+class Mammal : public Animal
+{
+public:
+
+    Mammal()
     {
-        cout << "Animal is eating.\n";
+        cout << "Mammal Constructor Called\n";
+    }
+
+    ~Mammal()
+    {
+        cout << "Mammal Destructor Called\n";
     }
 };
 
 
 
-class Bird : public Animal
+class Pet : public Animal
 {
 public:
 
-    Bird()
+    Pet()
     {
-        cout << "Bird Constructor Called\n";
+        cout << "Pet Constructor Called\n";
     }
 
-    ~Bird()
+    ~Pet()
     {
-        cout << "Bird Destructor Called\n";
-    }
-
-    void layEggs()
-    {
-        cout << "Bird lays eggs.\n";
+        cout << "Pet Destructor Called\n";
     }
 };
 
 
 
-class Flyer
+class Dog : public Mammal, public Pet
 {
 public:
 
-    Flyer()
+    Dog()
     {
-        cout << "Flyer Constructor Called\n";
+        cout << "Dog Constructor Called\n";
     }
 
-    ~Flyer()
+    ~Dog()
     {
-        cout << "Flyer Destructor Called\n";
-    }
-
-    void fly()
-    {
-        cout << "Duck is flying.\n";
-    }
-};
-
-
-
-class Swimmer
-{
-public:
-
-    Swimmer()
-    {
-        cout << "Swimmer Constructor Called\n";
-    }
-
-    ~Swimmer()
-    {
-        cout << "Swimmer Destructor Called\n";
-    }
-
-    void swim()
-    {
-        cout << "Duck is swimming.\n";
-    }
-};
-
-
-
-class Duck : public Bird, public Flyer, public Swimmer
-{
-public:
-
-    Duck()
-    {
-        cout << "Duck Constructor Called\n";
-    }
-
-    ~Duck()
-    {
-        cout << "Duck Destructor Called\n";
-    }
-
-    void quack()
-    {
-        cout << "Duck says: Quack Quack!\n";
+        cout << "Dog Destructor Called\n";
     }
 };
 
@@ -136,161 +83,150 @@ public:
 
 int main()
 {
-    Duck duck;
+    Dog dog;
 
-    cout << endl;
+    // dog.name = "Bruno";      // ❌ Compile Error
+    // cout << dog.name;        // ❌ Compile Error
 
-    duck.eat();
-    duck.layEggs();
-    duck.fly();
-    duck.swim();
-    duck.quack();
+    // Why?
+    //
+    // Dog contains TWO Animal objects:
+    //
+    // Mammal -> Animal
+    // Pet -> Animal
+    //
+    // Therefore, the compiler doesn't know
+    // which 'name' should be accessed.
+
+    dog.Mammal::name = "Bruno";
+    dog.Pet::name = "Rocky";
+
+    cout << "Name through Mammal : "
+         << dog.Mammal::name << endl;
+
+    cout << "Name through Pet : "
+         << dog.Pet::name << endl;
 }
 
 
 
 // ============================================================================
-// Experiment 1 : Constructor Calling Order
+// Experiment 1 : Ambiguous Member Access
 //
 // Objective:
-// Observe constructor execution in Hybrid Inheritance.
+// Observe the ambiguity created by duplicate base class objects.
 //
 // Steps:
 //
-// 1. Create:
+// 1. Uncomment:
 //
-//        Duck duck;
+//        dog.name = "Bruno";
 //
-// 2. Run the program.
+// 2. Compile.
 //
 // Observation:
 //
-// Animal Constructor Called
-// Bird Constructor Called
-// Flyer Constructor Called
-// Swimmer Constructor Called
-// Duck Constructor Called
+// Compilation Error:
+//
+// request for member 'name' is ambiguous
 //
 // Conclusion:
 //
-// Constructors execute from base classes to the derived class,
-// following the inheritance hierarchy.
+// Dog contains two copies of Animal.
+// The compiler cannot determine which 'name' is intended.
 // ============================================================================
 
 
 
 // ============================================================================
-// Experiment 2 : Destructor Calling Order
+// Experiment 2 : Duplicate Base Class Objects
+//
+// Objective:
+// Observe that Dog contains two Animal objects.
+//
+// Steps:
+//
+// 1. Assign:
+//
+//        dog.Mammal::name = "Bruno";
+//
+//        dog.Pet::name = "Rocky";
+//
+// 2. Print both.
+//
+// Observation:
+//
+// Bruno
+// Rocky
+//
+// Conclusion:
+//
+// Mammal and Pet each maintain their own independent Animal object.
+// ============================================================================
+
+
+
+// ============================================================================
+// Experiment 3 : Constructor Calling Order
+//
+// Objective:
+// Observe constructor execution.
+//
+// Observation:
+//
+// Animal Constructor
+// Mammal Constructor
+// Animal Constructor
+// Pet Constructor
+// Dog Constructor
+//
+// Conclusion:
+//
+// Animal constructor executes twice because
+// two Animal objects are created.
+// ============================================================================
+
+
+
+// ============================================================================
+// Experiment 4 : Destructor Calling Order
 //
 // Objective:
 // Observe destructor execution.
 //
-// Steps:
-//
-// 1. Run the program.
-//
-// 2. Observe the last lines.
-//
 // Observation:
 //
-// Duck Destructor Called
-// Swimmer Destructor Called
-// Flyer Destructor Called
-// Bird Destructor Called
-// Animal Destructor Called
+// Dog Destructor
+// Pet Destructor
+// Animal Destructor
+// Mammal Destructor
+// Animal Destructor
 //
 // Conclusion:
 //
-// Destructors execute in the reverse order of constructors.
+// Two Animal objects are destroyed independently.
 // ============================================================================
 
 
 
 // ============================================================================
-// Experiment 3 : Hybrid Inheritance
+// Experiment 5 : Why Virtual Inheritance?
 //
 // Objective:
-// Identify why this hierarchy is called Hybrid.
-//
-// Steps:
-//
-// Observe:
-//
-// Animal → Bird
-//
-// (Multilevel)
-//
-// Duck inherits from:
-//
-// Bird
-// Flyer
-// Swimmer
-//
-// (Multiple)
+// Understand why Virtual Inheritance exists.
 //
 // Observation:
 //
-// The hierarchy combines multiple inheritance types.
+// The duplicate Animal objects cause:
+//
+// • Memory duplication
+// • Ambiguous member access
+// • Constructor called twice
+// • Destructor called twice
 //
 // Conclusion:
 //
-// Hybrid Inheritance is simply a combination of two or more
-// inheritance types.
-// ============================================================================
-
-
-
-// ============================================================================
-// Experiment 4 : Removing One Parent
+// Version 10 will solve all these problems using:
 //
-// Objective:
-// Observe inherited functionality.
-//
-// Steps:
-//
-// Remove:
-//
-//        public Swimmer
-//
-// from Duck.
-//
-// Try:
-//
-//        duck.swim();
-//
-// Observation:
-//
-// Compilation Error.
-//
-// Conclusion:
-//
-// Every parent contributes its own members.
-// ============================================================================
-
-
-
-// ============================================================================
-// Experiment 5 : Constructor Order Depends on Inheritance List
-//
-// Objective:
-// Observe constructor execution order.
-//
-// Steps:
-//
-// Change:
-//
-// class Duck : public Bird, public Flyer, public Swimmer
-//
-// to
-//
-// class Duck : public Swimmer, public Flyer, public Bird
-//
-// Observation:
-//
-// Constructors execute in the same order as the inheritance list.
-//
-// Conclusion:
-//
-// Constructor order depends on the order of base classes
-// in the inheritance list.
+//        virtual public Animal
 // ============================================================================
