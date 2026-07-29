@@ -2,47 +2,72 @@
 using namespace std;
 
 // ============================================================================
-// Version 2
+// Version 3
 //
 // Topics Covered:
 //
-// - Function Overloading
+// - Operator Overloading
+// - Binary Operator
+// - Member Function Overloading
 // - Compile-Time Polymorphism
-// - Function Signature
-// - Overload Resolution
 // ============================================================================
 
 
 
 // ============================================================================
-// Calculator
+// Point
 //
-// All functions have the SAME name.
+// Represents a point in 2D space.
 //
-// Only their parameter lists are different.
+// We will overload the + operator.
 //
-// This is called Function Overloading.
+// Meaning:
+//
+// (x1,y1) + (x2,y2)
+//
+// =
+//
+// (x1+x2 , y1+y2)
 // ============================================================================
-class Calculator
+class Point
 {
+private:
+
+    int x;
+    int y;
+
 public:
 
-    void add(int a, int b)
+    Point(int x,int y)
     {
-        cout << "add(int,int) called" << endl;
-        cout << "Result = " << a + b << endl;
+        this->x = x;
+        this->y = y;
     }
 
-    void add(double a, double b)
+    void display()
     {
-        cout << "add(double,double) called" << endl;
-        cout << "Result = " << a + b << endl;
+        cout<<"("<<x<<","<<y<<")"<<endl;
     }
 
-    void add(int a, int b, int c)
+    // ========================================================================
+    // Operator Overloading
+    //
+    // This function overloads the + operator.
+    //
+    // Whenever we write:
+    //
+    // p1 + p2
+    //
+    // the compiler internally converts it into:
+    //
+    // p1.operator+(p2)
+    // ========================================================================
+    Point operator+(const Point &other)
     {
-        cout << "add(int,int,int) called" << endl;
-        cout << "Result = " << a + b + c << endl;
+        Point temp(x + other.x,
+                   y + other.y);
+
+        return temp;
     }
 };
 
@@ -50,147 +75,154 @@ public:
 
 int main()
 {
-    Calculator calculator;
+    Point p1(2,3);
 
-    calculator.add(10,20);
+    Point p2(4,5);
 
-    cout << endl;
+    Point p3 = p1 + p2;
 
-    calculator.add(10.5,20.5);
+    Point p4 = p1 + p2 + p3;
 
-    cout << endl;
+    cout<<"Point 1 : ";
+    p1.display();
 
-    calculator.add(10,20,30);
+    cout<<"Point 2 : ";
+    p2.display();
+
+    cout<<"Point 3 : ";
+    p3.display();
+
+    cout<<"Point 4 : ";
+    p4.display();
 }
 
 
 
 // ============================================================================
-// Experiment 1 : Different Parameter Types
+// Experiment 1 : Observe Compiler Translation
 //
 // Objective:
 //
-// Observe compiler overload resolution.
+// Understand what actually happens.
 //
-// Try:
+// Replace:
 //
-// calculator.add(5,6);
+// Point p3 = p1 + p2;
 //
-// calculator.add(5.5,6.5);
+// Conceptually with:
+//
+// Point p3 = p1.operator+(p2);
 //
 // Observation:
 //
-// Compiler automatically chooses the correct function.
+// Same output.
 //
 // Conclusion:
 //
-// Parameter types decide overload selection.
+// Operators internally become function calls.
 // ============================================================================
 
 
 
 // ============================================================================
-// Experiment 2 : Different Number of Parameters
+// Experiment 2 : Change the Meaning
 //
 // Objective:
 //
-// Observe overload based on parameter count.
+// Observe that we define the operator's behavior.
 //
-// Try:
+// Modify:
 //
-// calculator.add(1,2);
+// return Point(x + other.x,
+//              y + other.y);
 //
-// calculator.add(1,2,3);
+// to
 //
-// Observation:
-//
-// Both functions have the same name.
-//
-// Compiler distinguishes them using
-// the number of parameters.
-// ============================================================================
-
-
-
-// ============================================================================
-// Experiment 3 : Return Type Only
-//
-// Objective:
-//
-// Observe why return type alone
-// cannot overload functions.
-//
-// Try creating:
-//
-// int multiply(int,int);
-//
-// double multiply(int,int);
+// return Point(x - other.x,
+//              y - other.y);
 //
 // Observation:
 //
-// Compilation Error.
+// '+' now performs subtraction.
 //
 // Conclusion:
 //
-// Return type is NOT part of
-// the function signature.
+// The symbol remains '+',
+// but the meaning is defined by us.
 // ============================================================================
 
 
 
 // ============================================================================
-// Experiment 4 : Implicit Conversion
+// Experiment 3 : Chained Addition
 //
 // Objective:
 //
-// Observe overload resolution.
+// Observe multiple operator calls.
 //
 // Try:
 //
-// calculator.add('A','B');
+// Point p4 = p1 + p2 + p3;
 //
 // Observation:
 //
-// Characters are promoted to int.
+// Compiler performs:
 //
-// Therefore,
+// p1.operator+(p2)
 //
-// add(int,int)
+// then
 //
-// gets selected.
+// result.operator+(p3)
+//
+// Conclusion:
+//
+// Every '+' invokes operator+().
 // ============================================================================
 
 
 
 // ============================================================================
-// Experiment 5 : Ambiguous Overload
+// Experiment 4 : Built-in vs User-defined
 //
 // Objective:
 //
-// Observe ambiguity.
+// Compare built-in types.
 //
-// Create:
+// int a = 10;
+// int b = 20;
 //
-// void fun(int,double);
+// cout << a + b;
 //
-// void fun(double,int);
+// Observation:
 //
+// Built-in operators already have predefined meanings.
 //
+// Our Point class required us to define one.
+// ============================================================================
+
+
+
+// ============================================================================
+// Experiment 5 : Invalid Operator
 //
-// Call:
+// Objective:
 //
-// fun(10,10);
+// Remove operator+().
+//
+// Then write:
+//
+// Point p3 = p1 + p2;
 //
 // Observation:
 //
 // Compilation Error:
 //
-// call is ambiguous
+// no match for operator+
 //
 // Conclusion:
 //
-// Compiler cannot decide
-// which overload is a better match.
+// The compiler cannot invent
+// the meaning of '+' for user-defined classes.
 // ============================================================================
 
 
@@ -198,17 +230,25 @@ int main()
 // ============================================================================
 // Important Observation
 //
-// This is REAL Polymorphism.
+// Operator Overloading does NOT create new operators.
 //
-// But it is Compile-Time Polymorphism.
+// It only gives existing operators
+// a meaning for user-defined types.
 //
-// The compiler selects the correct function
-// before the program runs.
+// Operators such as:
 //
-// No:
+// +
+// -
+// *
+// ==
 //
-// • virtual
-// • Base Pointer
-// • Dynamic Dispatch
-// • Runtime Decision
+// already exist.
+//
+// We simply define how they behave
+// for our own classes.
+//
+// This decision is made entirely during compilation.
+//
+// Therefore,
+// this is Compile-Time Polymorphism.
 // ============================================================================
