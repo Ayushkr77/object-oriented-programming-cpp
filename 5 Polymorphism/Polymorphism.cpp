@@ -2,251 +2,195 @@
 using namespace std;
 
 // ============================================================================
-// NOTE:
-//
-// This file will evolve through multiple Git commits (versions).
-//
-// Every version introduces exactly ONE new concept.
-//
-// Don't just read the final code.
-//
-// Open the Git history and observe how the implementation gradually evolves.
-//
-// That progression is the real learning.
-// ============================================================================
-
-
-
-// ============================================================================
-// Version 1
+// Version 2
 //
 // Topics Covered:
 //
-// - Introduction to Polymorphism
-// - One Interface, Many Forms
-// - Same Function Name
-// - Different Behaviors
+// - Function Overloading
+// - Compile-Time Polymorphism
+// - Function Signature
+// - Overload Resolution
 // ============================================================================
 
 
 
 // ============================================================================
-// Base Class
+// Calculator
 //
-// Animal represents the common concept.
+// All functions have the SAME name.
 //
-// Every animal can make a sound.
+// Only their parameter lists are different.
 //
-// Currently this is just a normal member function.
-//
-// Runtime Polymorphism has NOT started yet.
+// This is called Function Overloading.
 // ============================================================================
-class Animal
+class Calculator
 {
 public:
 
-    void sound()
+    void add(int a, int b)
     {
-        cout << "Animal makes a sound." << endl;
+        cout << "add(int,int) called" << endl;
+        cout << "Result = " << a + b << endl;
+    }
+
+    void add(double a, double b)
+    {
+        cout << "add(double,double) called" << endl;
+        cout << "Result = " << a + b << endl;
+    }
+
+    void add(int a, int b, int c)
+    {
+        cout << "add(int,int,int) called" << endl;
+        cout << "Result = " << a + b + c << endl;
     }
 };
 
 
 
-// ============================================================================
-// Derived Class : Dog
-//
-// Dog provides its own version of sound().
-//
-// Notice:
-//
-// Function name remains the same.
-//
-// Only the behavior changes.
-// ============================================================================
-class Dog : public Animal
-{
-public:
-
-    void sound()
-    {
-        cout << "Dog says: Bark Bark!" << endl;
-    }
-};
-
-
-
-// ============================================================================
-// Derived Class : Cat
-// ============================================================================
-class Cat : public Animal
-{
-public:
-
-    void sound()
-    {
-        cout << "Cat says: Meow Meow!" << endl;
-    }
-};
-
-
-
-// ============================================================================
-// Derived Class : Cow
-// ============================================================================
-class Cow : public Animal
-{
-public:
-
-    void sound()
-    {
-        cout << "Cow says: Moo Moo!" << endl;
-    }
-};
-
-
-
-// ============================================================================
-// Demonstration
-//
-// Each object calls its own implementation.
-//
-// The compiler already knows each object's type.
-//
-// Therefore,
-// Runtime Polymorphism is NOT happening.
-// ============================================================================
 int main()
 {
-    Dog dog;
-    Cat cat;
-    Cow cow;
+    Calculator calculator;
 
-    Animal animal;
-    animal.sound();
-
-    cout << "Dog:" << endl;
-    dog.sound();
+    calculator.add(10,20);
 
     cout << endl;
 
-    cout << "Cat:" << endl;
-    cat.sound();
+    calculator.add(10.5,20.5);
 
     cout << endl;
 
-    cout << "Cow:" << endl;
-    cow.sound();
+    calculator.add(10,20,30);
 }
 
 
 
 // ============================================================================
-// Experiment 1 : Base Class Function
+// Experiment 1 : Different Parameter Types
 //
 // Objective:
 //
-// Observe the Base Class implementation.
+// Observe compiler overload resolution.
 //
-// Uncomment:
+// Try:
 //
-// Animal animal;
+// calculator.add(5,6);
 //
-// animal.sound();
+// calculator.add(5.5,6.5);
 //
 // Observation:
 //
-// Animal makes a sound.
+// Compiler automatically chooses the correct function.
 //
 // Conclusion:
 //
-// Base Class also has its own implementation.
+// Parameter types decide overload selection.
 // ============================================================================
 
 
 
 // ============================================================================
-// Experiment 2 : Add a New Animal
+// Experiment 2 : Different Number of Parameters
 //
 // Objective:
 //
-// Observe how easy it is to extend.
+// Observe overload based on parameter count.
+//
+// Try:
+//
+// calculator.add(1,2);
+//
+// calculator.add(1,2,3);
+//
+// Observation:
+//
+// Both functions have the same name.
+//
+// Compiler distinguishes them using
+// the number of parameters.
+// ============================================================================
+
+
+
+// ============================================================================
+// Experiment 3 : Return Type Only
+//
+// Objective:
+//
+// Observe why return type alone
+// cannot overload functions.
+//
+// Try creating:
+//
+// int multiply(int,int);
+//
+// double multiply(int,int);
+//
+// Observation:
+//
+// Compilation Error.
+//
+// Conclusion:
+//
+// Return type is NOT part of
+// the function signature.
+// ============================================================================
+
+
+
+// ============================================================================
+// Experiment 4 : Implicit Conversion
+//
+// Objective:
+//
+// Observe overload resolution.
+//
+// Try:
+//
+// calculator.add('A','B');
+//
+// Observation:
+//
+// Characters are promoted to int.
+//
+// Therefore,
+//
+// add(int,int)
+//
+// gets selected.
+// ============================================================================
+
+
+
+// ============================================================================
+// Experiment 5 : Ambiguous Overload
+//
+// Objective:
+//
+// Observe ambiguity.
 //
 // Create:
 //
-// class Lion : public Animal
-// {
-// public:
+// void fun(int,double);
 //
-//     void sound()
-//     {
-//         cout << "Lion says: Roar!" << endl;
-//     }
-// };
+// void fun(double,int);
 //
-// Observation:
 //
-// Only the implementation changes.
 //
-// The interface remains:
+// Call:
 //
-// sound()
-// ============================================================================
-
-
-
-// ============================================================================
-// Experiment 3 : Different Function Names
-//
-// Objective:
-//
-// Observe why common interfaces are useful.
-//
-// Rename:
-//
-// Dog::sound()
-//
-// to
-//
-// bark()
-//
-// Now you'll have:
-//
-// dog.bark();
-//
-// cat.sound();
-//
-// cow.sound();
-//
-// Conclusion:
-//
-// Using different function names destroys the common interface.
-// ============================================================================
-
-
-
-// ============================================================================
-// Experiment 4 : Calling Base Class Function
-//
-// Objective:
-//
-// Observe inherited functions.
-//
-// Uncomment:
-//
-// Dog dog;
-//
-// dog.Animal::sound();
+// fun(10,10);
 //
 // Observation:
 //
-// Animal makes a sound.
+// Compilation Error:
+//
+// call is ambiguous
 //
 // Conclusion:
 //
-// Derived classes inherit Base Class functions.
-//
-// The Scope Resolution Operator allows us to explicitly call them.
+// Compiler cannot decide
+// which overload is a better match.
 // ============================================================================
 
 
@@ -254,23 +198,17 @@ int main()
 // ============================================================================
 // Important Observation
 //
-// This version demonstrates only the IDEA of Polymorphism.
+// This is REAL Polymorphism.
 //
-// It is NOT Runtime Polymorphism.
+// But it is Compile-Time Polymorphism.
 //
-// Why?
+// The compiler selects the correct function
+// before the program runs.
 //
-// • No virtual keyword
-// • No Base Class pointer
-// • No Dynamic Dispatch
-// • No VTable
-// • No VPtr
+// No:
 //
-// The compiler directly calls:
-//
-// Dog::sound()
-//
-// because it already knows the object's type.
-//
-// Runtime Polymorphism begins in Version 5.
+// • virtual
+// • Base Pointer
+// • Dynamic Dispatch
+// • Runtime Decision
 // ============================================================================
