@@ -2,72 +2,78 @@
 using namespace std;
 
 // ============================================================================
-// Version 3
+// Version 4
 //
 // Topics Covered:
 //
-// - Operator Overloading
-// - Binary Operator
-// - Member Function Overloading
-// - Compile-Time Polymorphism
+// - Function Overriding
+// - Same Function Signature
+// - Base Class
+// - Derived Class
+// - Method Hiding
 // ============================================================================
 
 
 
 // ============================================================================
-// Point
+// Base Class
 //
-// Represents a point in 2D space.
+// Animal provides a generic implementation.
 //
-// We will overload the + operator.
-//
-// Meaning:
-//
-// (x1,y1) + (x2,y2)
-//
-// =
-//
-// (x1+x2 , y1+y2)
+// Derived classes will override this function.
 // ============================================================================
-class Point
+class Animal
 {
-private:
-
-    int x;
-    int y;
-
 public:
 
-    Point(int x,int y)
+    void sound()
     {
-        this->x = x;
-        this->y = y;
+        cout << "Animal makes a sound." << endl;
     }
+};
 
-    void display()
+
+
+// ============================================================================
+// Dog overrides sound().
+// ============================================================================
+class Dog : public Animal
+{
+public:
+
+    void sound()
     {
-        cout<<"("<<x<<","<<y<<")"<<endl;
+        cout << "Dog says: Bark Bark!" << endl;
     }
+};
 
-    // ========================================================================
-    // Operator Overloading
-    //
-    // This function overloads the + operator.
-    //
-    // Whenever we write:
-    //
-    // p1 + p2
-    //
-    // the compiler internally converts it into:
-    //
-    // p1.operator+(p2)
-    // ========================================================================
-    Point operator+(const Point &other)
+
+
+// ============================================================================
+// Cat overrides sound().
+// ============================================================================
+class Cat : public Animal
+{
+public:
+
+    void sound()
     {
-        Point temp(x + other.x,
-                   y + other.y);
+        cout << "Cat says: Meow Meow!" << endl;
+    }
+};
 
-        return temp;
+
+
+// ============================================================================
+// Cow overrides sound().
+// ============================================================================
+class Cow : public Animal
+{
+public:
+
+    void sound()
+    {
+        cout << "Cow says: Moo Moo!" << endl;
     }
 };
 
@@ -75,154 +81,161 @@ public:
 
 int main()
 {
-    Point p1(2,3);
+    Dog dog;
+    Cat cat;
+    Cow cow;
 
-    Point p2(4,5);
+    cout << "Dog:" << endl;
+    dog.sound();
 
-    Point p3 = p1 + p2;
+    cout << endl;
 
-    Point p4 = p1 + p2 + p3;
+    cout << "Cat:" << endl;
+    cat.sound();
 
-    cout<<"Point 1 : ";
-    p1.display();
+    cout << endl;
 
-    cout<<"Point 2 : ";
-    p2.display();
+    cout << "Cow:" << endl;
+    cow.sound();
 
-    cout<<"Point 3 : ";
-    p3.display();
+    cout << endl;
 
-    cout<<"Point 4 : ";
-    p4.display();
+    cout << "Calling Base Class Function Explicitly:" << endl;
+
+    dog.Animal::sound();
 }
 
 
 
 // ============================================================================
-// Experiment 1 : Observe Compiler Translation
+// Experiment 1 : Calling Base Class Function
 //
 // Objective:
 //
-// Understand what actually happens.
-//
-// Replace:
-//
-// Point p3 = p1 + p2;
-//
-// Conceptually with:
-//
-// Point p3 = p1.operator+(p2);
-//
-// Observation:
-//
-// Same output.
-//
-// Conclusion:
-//
-// Operators internally become function calls.
-// ============================================================================
-
-
-
-// ============================================================================
-// Experiment 2 : Change the Meaning
-//
-// Objective:
-//
-// Observe that we define the operator's behavior.
-//
-// Modify:
-//
-// return Point(x + other.x,
-//              y + other.y);
-//
-// to
-//
-// return Point(x - other.x,
-//              y - other.y);
-//
-// Observation:
-//
-// '+' now performs subtraction.
-//
-// Conclusion:
-//
-// The symbol remains '+',
-// but the meaning is defined by us.
-// ============================================================================
-
-
-
-// ============================================================================
-// Experiment 3 : Chained Addition
-//
-// Objective:
-//
-// Observe multiple operator calls.
+// Observe explicit Base Class access.
 //
 // Try:
 //
-// Point p4 = p1 + p2 + p3;
+// dog.Animal::sound();
 //
 // Observation:
 //
-// Compiler performs:
-//
-// p1.operator+(p2)
-//
-// then
-//
-// result.operator+(p3)
+// Animal makes a sound.
 //
 // Conclusion:
 //
-// Every '+' invokes operator+().
+// Even though Dog overrides sound(),
+// the Base Class version still exists and
+// can be accessed using the Scope Resolution Operator.
 // ============================================================================
 
 
 
 // ============================================================================
-// Experiment 4 : Built-in vs User-defined
+// Experiment 2 : Remove Dog::sound()
 //
 // Objective:
 //
-// Compare built-in types.
+// Observe inherited behavior.
 //
-// int a = 10;
-// int b = 20;
+// Remove:
 //
-// cout << a + b;
+// void sound()
 //
-// Observation:
-//
-// Built-in operators already have predefined meanings.
-//
-// Our Point class required us to define one.
-// ============================================================================
-
-
-
-// ============================================================================
-// Experiment 5 : Invalid Operator
-//
-// Objective:
-//
-// Remove operator+().
-//
-// Then write:
-//
-// Point p3 = p1 + p2;
+// from Dog.
 //
 // Observation:
 //
-// Compilation Error:
+// dog.sound();
 //
-// no match for operator+
+// now calls
+//
+// Animal::sound()
 //
 // Conclusion:
 //
-// The compiler cannot invent
-// the meaning of '+' for user-defined classes.
+// If a Derived Class does not override,
+// it inherits the Base implementation.
+// ============================================================================
+
+
+
+// ============================================================================
+// Experiment 3 : Change Parameter List
+//
+// Objective:
+//
+// Observe overriding requirements.
+//
+// Replace:
+//
+// void sound()
+//
+// with
+//
+// void sound(int volume)
+//
+// Observation:
+//
+// Dog no longer overrides Animal::sound().
+//
+// Conclusion:
+//
+// The parameter list must match for overriding.
+// ============================================================================
+
+
+
+// ============================================================================
+// Experiment 4 : Different Return Type
+//
+// Objective:
+//
+// Observe return type rules.
+//
+// Try:
+//
+// int sound();
+//
+// Observation:
+//
+// Compilation Error (or no valid override).
+//
+// Conclusion:
+//
+// Return type generally cannot be changed
+// when overriding (except for certain covariant cases,
+// which are beyond our current scope).
+// ============================================================================
+
+
+
+// ============================================================================
+// Experiment 5 : Why This Is Not Runtime Polymorphism
+//
+// Objective:
+//
+// Understand the limitation.
+//
+// Observe:
+//
+// Dog dog;
+//
+// dog.sound();
+//
+// Compiler already knows
+// that the object is Dog.
+//
+// Therefore,
+// it directly calls Dog::sound().
+//
+// Conclusion:
+//
+// Runtime Polymorphism has NOT started.
+//
+// That begins only after introducing:
+//
+// virtual
 // ============================================================================
 
 
@@ -230,25 +243,17 @@ int main()
 // ============================================================================
 // Important Observation
 //
-// Operator Overloading does NOT create new operators.
+// Function Overriding simply means
+// a Derived Class provides its own implementation
+// of a Base Class function.
 //
-// It only gives existing operators
-// a meaning for user-defined types.
+// It does NOT automatically create
+// Runtime Polymorphism.
 //
-// Operators such as:
+// Runtime Polymorphism requires:
 //
-// +
-// -
-// *
-// ==
-//
-// already exist.
-//
-// We simply define how they behave
-// for our own classes.
-//
-// This decision is made entirely during compilation.
-//
-// Therefore,
-// this is Compile-Time Polymorphism.
+// • Function Overriding
+// • virtual keyword
+// • Base Class pointer/reference
+// • Dynamic Dispatch
 // ============================================================================
